@@ -8,7 +8,8 @@
   },
   "require-dev": {
     "phpunit/phpunit": "6.0.*",
-    "squizlabs/php_codesniffer": "3.*"
+    "squizlabs/php_codesniffer": "3.*",
+    "ext-pdo": "*"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
@@ -24,8 +25,12 @@
     "symfony/yaml": "^4.1",
     "symfony/http-foundation": "^4.1",
     "symfony/event-dispatcher": "^4.1",
-    " ": "^0.10.6",
     "symfony/routing": "^4.1",
-    "symfony/validator": "^4.1"
+    "symfony/validator": "^4.1",
+    "symfony/console": "^4.1",
+    "prooph/service-bus": "^6.2",
+    "prooph/event-sourcing": "^5.0",
+    "ramsey/uuid": "^3.8",
+    "prooph/pdo-event-store": "^1.9"
   }
 }
