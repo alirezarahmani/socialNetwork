@@ -16,6 +16,9 @@ class PostCommand extends Command
      */
     private $message;
 
+    /**
+     * @var string
+     */
     protected $messageName;
 
     public function __construct(string $username, string $message)
@@ -23,11 +26,6 @@ class PostCommand extends Command
         $this->username = $username;
         $this->message = $message;
         $this->messageName = __CLASS__;
-    }
-
-    public function getUsername(): string
-    {
-        return $this->username;
     }
 
     public function payload(): array

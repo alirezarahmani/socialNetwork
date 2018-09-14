@@ -4,10 +4,10 @@ namespace SocialNetwork\Domain\Aggregates\Wall;
 
 use Prooph\EventSourcing\AggregateChanged;
 
-class AddPost extends AggregateChanged
+class AddPost extends AggregateChanged implements AggregateInterface
 {
-    public function post(): array
+    public function payload(): array
     {
-        return [$this->payload['message'], $this->payload['username']];
+        return $this->payload;
     }
 }

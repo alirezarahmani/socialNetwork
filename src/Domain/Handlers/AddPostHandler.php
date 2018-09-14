@@ -2,23 +2,23 @@
 declare(strict_types=1);
 namespace SocialNetwork\Domain\Handlers;
 
-use PDO;
-use Prooph\Common\Messaging\FQCNMessageFactory;
+use Boot\SocialNetwork;
 use Prooph\EventStore\Pdo\MySqlEventStore;
-use Prooph\EventStore\Pdo\PersistenceStrategy\MySqlAggregateStreamStrategy;
 use SocialNetwork\Application\Commands\PostCommand;
 use SocialNetwork\Domain\Aggregates\Wall\WallAggregate;
 use SocialNetwork\Infrastructure\Repositories\WallRepository;
 
-class PostHandler
+class AddPostHandler
 {
     public function __invoke(PostCommand $command)
     {
-        $eventStore = new MySqlEventStore(new FQCNMessageFactory(), new PDO('mysql:host=mysql;port=3306;dbname=test;charset=utf8mb4','root','root'), new MySqlAggregateStreamStrategy());
+        $payload = $command->payload();
+        /** @var MySqlEventStore $eventStore */
+        $eventStore = SocialNetwork::getContainer()->get(MySqlEventStore::class);
         $userRepository = new WallRepository($eventStore);
-        $user = WallAggregate::postNew('John Doe','d');
+        $user = WallAggregate::addPost($payload['username'], $payload['message']);
         $userRepository->save($user);
-        $userId = $user->postId();
+        $userId = $user->getPostId();
         echo $userId;
     }
 }

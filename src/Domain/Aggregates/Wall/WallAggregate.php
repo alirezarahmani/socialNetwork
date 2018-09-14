@@ -11,7 +11,7 @@ class WallAggregate extends AggregateRoot
     /**
      * @var Uuid
      */
-    private $uuid;
+    private $id;
 
     /**
      * @var string
@@ -23,57 +23,62 @@ class WallAggregate extends AggregateRoot
      */
     private $message;
 
-    public static function postNew(string $username, string $message): WallAggregate
+    public static function addPost(string $username, string $message): WallAggregate
     {
         /**
          * as we assume we are in sunny day, then there would be no validation
          */
         $uuid = Uuid::uuid4();
         $instance = new self();
-        $instance->recordThat(AddPost::occur($uuid->toString(), ['username' => $username, 'message' => $message]));
+        $instance->recordThat(
+            AddPost::occur(
+                $uuid->toString(),
+                ['username' => $username, 'message' => $message]
+            )
+        );
         return $instance;
     }
 
-    public function postId(): Uuid
-    {
-        return $this->uuid;
-    }
-
-    public function username(): string
-    {
-        return $this->username;
-    }
-
-    public function updateMessage(string $newMessage): void
+    public function updatePost(string $newMessage): void
     {
         if ($newMessage !== $this->message) {
             $this->recordThat(UpdatePost::occur(
-                $this->uuid->toString(),
-                ['new_message' => $newMessage, 'old_message' => $this->message]
+                $this->id->toString(),
+                ['message' => $newMessage]
             ));
         }
     }
 
+    public function getPostId(): Uuid
+    {
+        return $this->id;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
     /**
-     * Every AR needs a hidden method that returns the identifier of the AR as a string
+     * Every AggregateRoot needs a hidden method that returns the identifier of the AggregateRoot as a string
      */
     protected function aggregateId(): string
     {
-        return $this->uuid->toString();
+        return $this->id->toString();
     }
 
     protected function apply(AggregateChanged $event): void
     {
-        switch (\get_class($event)) {
-            case AddPost::class:
-                $this->uuid = Uuid::fromString($event->aggregateId());
-                $payLoad = $event->post();
-                $this->message = $payLoad['message'];
-                $this->username = $payLoad['username'];
-                break;
-            case UpdatePost::class:
-                $this->message = $event->newMessage();
-                break;
+        $this->id = Uuid::fromString($event->aggregateId());
+        foreach ($event->payload() as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
         }
     }
 }

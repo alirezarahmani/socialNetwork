@@ -15,7 +15,8 @@
   "prefer-stable": true,
   "autoload": {
     "psr-4": {
-      "SocialNetwork\\": "src/"
+      "SocialNetwork\\": "src/",
+      "Boot\\": "boot/"
     }
   },
   "require": {
@@ -31,6 +32,7 @@
     "prooph/service-bus": "^6.2",
     "prooph/event-sourcing": "^5.0",
     "ramsey/uuid": "^3.8",
-    "prooph/pdo-event-store": "^1.9"
+    "prooph/pdo-event-store": "^1.9",
+    "prooph/standard-projections": "^1.1"
   }
 }
