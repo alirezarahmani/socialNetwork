@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
-namespace SocialNetwork\Domain\Aggregates\Wall;
+namespace SocialNetwork\Domain\Events;
 
 use Prooph\EventSourcing\AggregateChanged;
 
-class AddPost extends AggregateChanged implements AggregateInterface
+class AddPost extends AggregateChanged
 {
     public function payload(): array
     {

@@ -4,7 +4,7 @@ namespace SocialNetwork\Application\Commands;
 
 use Prooph\Common\Messaging\Command;
 
-class PostCommand extends Command
+class PostCommand extends Command implements CommandInterface
 {
     /**
      * @var string

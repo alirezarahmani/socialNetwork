@@ -2,8 +2,11 @@
 declare(strict_types=1);
 namespace SocialNetwork\Infrastructure\Cli;
 
+use Boot\SocialNetwork;
+use Prooph\EventStore\Pdo\MySqlEventStore;
 use SocialNetwork\Application\Commands\PostCommand;
 use SocialNetwork\Domain\Handlers\AddPostHandler;
+use SocialNetwork\Infrastructure\Repositories\WallRepository;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,14 +25,13 @@ class AddPostCli extends SocialNetworkCli
 
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        $this->dispatch($input->getArgument('username'), $input->getArgument('message'));
-        $output->writeln('<info>Well done! the post is on the wall of ' . $input->getArgument('username'). ' </info>');
-    }
-
-    private function dispatch($username, $message): void
-    {
-        $this->router->route(PostCommand::class)->to(new AddPostHandler());
+        $eventStore = SocialNetwork::getContainer()->get(MySqlEventStore::class);
+        $this->router->route(PostCommand::class)->to(new AddPostHandler(new WallRepository($eventStore)));
         $this->router->attachToMessageBus($this->commandBus);
-        $this->commandBus->dispatch(new PostCommand($username, $message));
+        $this->commandBus->dispatch(new PostCommand(
+            $input->getArgument('username'),
+            $input->getArgument('message')
+        ));
+        $output->writeln('<info>Well done! the post is on the wall of ' . $input->getArgument('username'). ' </info>');
     }
 }

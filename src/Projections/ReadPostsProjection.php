@@ -4,8 +4,8 @@ namespace SocialNetwork\Application\Projections;
 
 use Boot\SocialNetwork;
 use Prooph\EventStore\Pdo\Projection\MySqlProjectionManager;
-use SocialNetwork\Domain\Aggregates\Wall\AddPost;
-use SocialNetwork\Domain\Aggregates\Wall\WallAggregate;
+use SocialNetwork\Domain\Aggregates\AddPost;
+use SocialNetwork\Domain\Aggregates\WallAggregate;
 
 class ReadPostsProjection
 {

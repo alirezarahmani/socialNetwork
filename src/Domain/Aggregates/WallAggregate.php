@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
-namespace SocialNetwork\Domain\Aggregates\Wall;
+namespace SocialNetwork\Domain\Aggregates;
 
 use Prooph\EventSourcing\AggregateChanged;
 use Prooph\EventSourcing\AggregateRoot;
 use Ramsey\Uuid\Uuid;
+use SocialNetwork\Domain\Events\AddPost;
 
 class WallAggregate extends AggregateRoot
 {
@@ -28,40 +29,14 @@ class WallAggregate extends AggregateRoot
         /**
          * as we assume we are in sunny day, then there would be no validation
          */
-        $uuid = Uuid::uuid4();
         $instance = new self();
         $instance->recordThat(
             AddPost::occur(
-                $uuid->toString(),
+                (Uuid::uuid4())->toString(),
                 ['username' => $username, 'message' => $message]
             )
         );
         return $instance;
-    }
-
-    public function updatePost(string $newMessage): void
-    {
-        if ($newMessage !== $this->message) {
-            $this->recordThat(UpdatePost::occur(
-                $this->id->toString(),
-                ['message' => $newMessage]
-            ));
-        }
-    }
-
-    public function getPostId(): Uuid
-    {
-        return $this->id;
-    }
-
-    public function getUsername(): string
-    {
-        return $this->username;
-    }
-
-    public function getMessage(): string
-    {
-        return $this->message;
     }
 
     /**

@@ -2,23 +2,27 @@
 declare(strict_types=1);
 namespace SocialNetwork\Domain\Handlers;
 
-use Boot\SocialNetwork;
-use Prooph\EventStore\Pdo\MySqlEventStore;
-use SocialNetwork\Application\Commands\PostCommand;
-use SocialNetwork\Domain\Aggregates\Wall\WallAggregate;
-use SocialNetwork\Infrastructure\Repositories\WallRepository;
+use SocialNetwork\Application\Commands\CommandInterface;
+use SocialNetwork\Domain\Aggregates\WallAggregate;
+use SocialNetwork\Domain\Repository\RepositoryInterface;
 
 class AddPostHandler
 {
-    public function __invoke(PostCommand $command)
+    private $repository;
+
+    public function __construct(RepositoryInterface $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    public function __invoke(CommandInterface $command): void
     {
         $payload = $command->payload();
-        /** @var MySqlEventStore $eventStore */
-        $eventStore = SocialNetwork::getContainer()->get(MySqlEventStore::class);
-        $userRepository = new WallRepository($eventStore);
-        $user = WallAggregate::addPost($payload['username'], $payload['message']);
-        $userRepository->save($user);
-        $userId = $user->getPostId();
-        echo $userId;
+        /**
+         * according to GRASP, Creator pattern
+         * https://en.wikipedia.org/wiki/GRASP_(object-oriented_design)#Creator
+         */
+        $wall = WallAggregate::addPost($payload['username'], $payload['message']);
+        $this->repository->save($wall);
     }
 }

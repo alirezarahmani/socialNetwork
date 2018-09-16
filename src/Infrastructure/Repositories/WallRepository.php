@@ -8,7 +8,7 @@ use Prooph\EventSourcing\AggregateRoot;
 use Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator;
 use Prooph\EventStore\EventStore;
 use Ramsey\Uuid\Uuid;
-use SocialNetwork\Domain\Aggregates\Wall\WallAggregate;
+use SocialNetwork\Domain\Aggregates\WallAggregate;
 use SocialNetwork\Domain\Repository\RepositoryInterface;
 
 class WallRepository extends AggregateRepository implements RepositoryInterface
@@ -20,7 +20,7 @@ class WallRepository extends AggregateRepository implements RepositoryInterface
             AggregateType::fromAggregateRootClass(WallAggregate::class),
             new AggregateTranslator(),
             null, //We don't use a snapshot FOR NOW
-            null, //Also a custom stream name is not required
+            'timeline',
             true
         );
     }
