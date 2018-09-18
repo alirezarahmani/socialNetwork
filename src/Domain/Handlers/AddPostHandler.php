@@ -4,7 +4,7 @@ namespace SocialNetwork\Domain\Handlers;
 
 use SocialNetwork\Application\Commands\CommandInterface;
 use SocialNetwork\Domain\Aggregates\WallAggregate;
-use SocialNetwork\Domain\Repository\RepositoryInterface;
+use SocialNetwork\Domain\Repository\Persistence\RepositoryInterface;
 
 class AddPostHandler
 {
@@ -22,7 +22,11 @@ class AddPostHandler
          * according to GRASP, Creator pattern
          * https://en.wikipedia.org/wiki/GRASP_(object-oriented_design)#Creator
          */
-        $wall = WallAggregate::addPost($payload['username'], $payload['message']);
+        $wall = WallAggregate::addPost(
+            $payload['username'],
+            $payload['message'],
+            $payload['createdAt']
+        );
         $this->repository->save($wall);
     }
 }

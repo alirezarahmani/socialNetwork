@@ -6,7 +6,7 @@ use Boot\SocialNetwork;
 use Prooph\EventStore\Pdo\MySqlEventStore;
 use SocialNetwork\Application\Commands\PostCommand;
 use SocialNetwork\Domain\Handlers\AddPostHandler;
-use SocialNetwork\Infrastructure\Repositories\WallRepository;
+use SocialNetwork\Infrastructure\Repositories\Persistence\WallRepository;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,6 +32,6 @@ class AddPostCli extends SocialNetworkCli
             $input->getArgument('username'),
             $input->getArgument('message')
         ));
-        $output->writeln('<info>Well done! the post is on the wall of ' . $input->getArgument('username'). ' </info>');
+        $output->writeln('<info> Well done! The post is on the wall of ' . $input->getArgument('username'). ' </info>');
     }
 }

@@ -6,6 +6,8 @@ use Prooph\Common\Messaging\FQCNMessageFactory;
 use Prooph\EventStore\Pdo\MySqlEventStore;
 use Prooph\EventStore\Pdo\PersistenceStrategy\MySqlAggregateStreamStrategy;
 use Prooph\EventStore\Pdo\Projection\MySqlProjectionManager;
+use SocialNetwork\Application\Services\MemcachedService;
+use SocialNetwork\Application\Storage\MemcachedCacheStorage;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
@@ -42,6 +44,10 @@ class SocialNetwork
                 ->addArgument(new Reference(\PDO::class))
                 ->addArgument(new Reference(MySqlAggregateStreamStrategy::class))->setPublic(true);
             $container->register(EventDispatcher::class)->setPublic(true);
+            $container->register(MemcachedService::class)->setPublic(true);
+            $container->register(MemcachedCacheStorage::class)
+                ->addArgument(new Reference(MemcachedService::class))
+                ->setPublic(true);
             $container->register(MySqlProjectionManager::class)
                 ->addArgument(new Reference(MySqlEventStore::class))
                 ->addArgument(new Reference(\PDO::class))

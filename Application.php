@@ -8,5 +8,6 @@ use Symfony\Component\Console\Application;
 
 $application = new Application();
 $application->add(new \SocialNetwork\Infrastructure\Cli\AddPostCli());
+$application->add(new \SocialNetwork\Infrastructure\Cli\RunProjectionCli());
 $application->add(new \SocialNetwork\Infrastructure\Cli\ReadCli());
 $application->run();

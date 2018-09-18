@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace SocialNetwork\Infrastructure\Repositories;
+namespace SocialNetwork\Infrastructure\Repositories\Persistence;
 
 use Prooph\EventSourcing\Aggregate\AggregateRepository;
 use Prooph\EventSourcing\Aggregate\AggregateType;
@@ -9,7 +9,7 @@ use Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator;
 use Prooph\EventStore\EventStore;
 use Ramsey\Uuid\Uuid;
 use SocialNetwork\Domain\Aggregates\WallAggregate;
-use SocialNetwork\Domain\Repository\RepositoryInterface;
+use SocialNetwork\Domain\Repository\Persistence\RepositoryInterface;
 
 class WallRepository extends AggregateRepository implements RepositoryInterface
 {
@@ -20,7 +20,7 @@ class WallRepository extends AggregateRepository implements RepositoryInterface
             AggregateType::fromAggregateRootClass(WallAggregate::class),
             new AggregateTranslator(),
             null, //We don't use a snapshot FOR NOW
-            'timeline',
+            null,
             true
         );
     }

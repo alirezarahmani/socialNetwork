@@ -59,7 +59,7 @@ class MemcachedService
     public function getStats(): array
     {
         $stats = [];
-        $hosts = $this->serviceSettings()['memcached']['hosts'];
+        $hosts = ["memcached:11211", "memcached:11212", "memcached:11213"];
         foreach ($hosts as $host) {
             preg_match('/(?P<protocol>\w+):\/\/(?P<host>[0-9a-z._]*):(?P<port>\d+)/', $host, $matches);
             $memcached = new \Memcached();
@@ -316,11 +316,10 @@ class MemcachedService
     private function getMemcached(): \Memcached
     {
         if ($this->memcached === null) {
-            $settings = $this->serviceSettings()['memcached'];
-            preg_match('/(?P<protocol>\w+):\/\/(?P<host>[0-9a-z._]*):(?P<port>\d+)/', $settings['mcrouter'], $matches);
+            preg_match('/(?P<protocol>\w+):\/\/(?P<host>[0-9a-z._]*):(?P<port>\d+)/', 'memcached:5000', $matches);
             $this->memcached = new \Memcached();
             $this->memcached->setOption(\Memcached::OPT_BINARY_PROTOCOL, false);
-            $this->memcached->addServer($matches['host'], $matches['port']);
+            $this->memcached->addServer('memcached', 5000);
         }
         return $this->memcached;
     }

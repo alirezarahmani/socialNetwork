@@ -30,6 +30,8 @@ class MyCachedContainer extends Container
         $this->methodMap = array(
             'Prooph\\EventStore\\Pdo\\MySqlEventStore' => 'getMySqlEventStoreService',
             'Prooph\\EventStore\\Pdo\\Projection\\MySqlProjectionManager' => 'getMySqlProjectionManagerService',
+            'SocialNetwork\\Application\\Services\\MemcachedService' => 'getMemcachedServiceService',
+            'SocialNetwork\\Application\\Storage\\MemcachedCacheStorage' => 'getMemcachedCacheStorageService',
             'Symfony\\Component\\EventDispatcher\\EventDispatcher' => 'getEventDispatcherService',
         );
 
@@ -81,6 +83,26 @@ class MyCachedContainer extends Container
     protected function getMySqlProjectionManagerService()
     {
         return $this->services['Prooph\EventStore\Pdo\Projection\MySqlProjectionManager'] = new \Prooph\EventStore\Pdo\Projection\MySqlProjectionManager(($this->services['Prooph\EventStore\Pdo\MySqlEventStore'] ?? $this->getMySqlEventStoreService()), ($this->privates['PDO'] ?? $this->privates['PDO'] = new \PDO('mysql:host=mysql;port=3306;dbname=my_social_network;charset=utf8mb4', 'root', 'root')), 'event_streams', 'projections');
+    }
+
+    /**
+     * Gets the public 'SocialNetwork\Application\Services\MemcachedService' shared service.
+     *
+     * @return \SocialNetwork\Application\Services\MemcachedService
+     */
+    protected function getMemcachedServiceService()
+    {
+        return $this->services['SocialNetwork\Application\Services\MemcachedService'] = new \SocialNetwork\Application\Services\MemcachedService();
+    }
+
+    /**
+     * Gets the public 'SocialNetwork\Application\Storage\MemcachedCacheStorage' shared service.
+     *
+     * @return \SocialNetwork\Application\Storage\MemcachedCacheStorage
+     */
+    protected function getMemcachedCacheStorageService()
+    {
+        return $this->services['SocialNetwork\Application\Storage\MemcachedCacheStorage'] = new \SocialNetwork\Application\Storage\MemcachedCacheStorage(($this->services['SocialNetwork\Application\Services\MemcachedService'] ?? $this->services['SocialNetwork\Application\Services\MemcachedService'] = new \SocialNetwork\Application\Services\MemcachedService()));
     }
 
     /**

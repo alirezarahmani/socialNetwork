@@ -4,7 +4,7 @@ namespace SocialNetwork\Application\Storage;
 
 use SocialNetwork\Application\Services\MemcachedService;
 
-class MemcachedCacheStorage implements CacheStorage
+class MemcachedCacheStorage implements CacheStorageInterface
 {
 
     private $memcached;

@@ -30,7 +30,8 @@ class PostCommand extends Command implements CommandInterface
 
     public function payload(): array
     {
-        return ['username' => $this->username, 'message' => $this->message];
+        $this ->createdAt = date("Y-m-d H:i:s");
+        return ['username' => $this->username, 'message' => $this->message, 'createdAt' => $this->createdAt];
     }
 
     /**
@@ -41,5 +42,6 @@ class PostCommand extends Command implements CommandInterface
     {
         $this->username = $payload['username'];
         $this->message = $payload['message'];
+        $this->createdAt = $payload['createdAt'];
     }
 }

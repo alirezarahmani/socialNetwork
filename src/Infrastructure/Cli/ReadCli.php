@@ -2,7 +2,9 @@
 declare(strict_types=1);
 namespace SocialNetwork\Infrastructure\Cli;
 
-use SocialNetwork\Application\Projections\ReadPostsProjection;
+use Boot\SocialNetwork;
+use SocialNetwork\Application\Storage\MemcachedCacheStorage;
+use SocialNetwork\Infrastructure\Repositories\NonPersistence\WallRepository;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,7 +21,16 @@ class ReadCli extends SocialNetworkCli
 
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        (new ReadPostsProjection())->byUsername();
-        $output->writeln('<info>Well done! the post is on the wall of ' . $input->getArgument('username'). ' </info>');
+        $index =new WallRepository(SocialNetwork::getContainer()->get(MemcachedCacheStorage::class));
+        $result = $index->findByIndex('username_index', $input->getArgument('username'));
+        if (empty($result)) {
+            $output->writeln('<error>' . $input->getArgument('username') . ' has not posted yet!</error>');
+            return;
+        }
+        foreach ($result as $key => $value) {
+            $data = is_array($value) ? implode(' ', $value) : $value;
+            $output->writeln('<info> | ' . $data);
+
+        }
     }
 }

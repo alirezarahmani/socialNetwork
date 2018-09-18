@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace SocialNetwork\Application\Storage;
 
-interface CacheStorage
+interface CacheStorageInterface
 {
 
     public function set(string $key, $value, int $ttl);

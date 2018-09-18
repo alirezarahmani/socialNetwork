@@ -24,7 +24,12 @@ class WallAggregate extends AggregateRoot
      */
     private $message;
 
-    public static function addPost(string $username, string $message): WallAggregate
+    /**
+     * @var string
+     */
+    private $createdAt;
+
+    public static function addPost(string $username, string $message, string $createdAt): WallAggregate
     {
         /**
          * as we assume we are in sunny day, then there would be no validation
@@ -33,7 +38,7 @@ class WallAggregate extends AggregateRoot
         $instance->recordThat(
             AddPost::occur(
                 (Uuid::uuid4())->toString(),
-                ['username' => $username, 'message' => $message]
+                ['username' => $username, 'message' => $message, 'create_at' => $createdAt]
             )
         );
         return $instance;
