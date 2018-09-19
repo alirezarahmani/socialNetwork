@@ -112,16 +112,16 @@
         },
         {
             "name": "marc-mabe/php-enum",
-            "version": "v3.0.1",
+            "version": "v3.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/marc-mabe/php-enum.git",
-                "reference": "aa94dd121255747539807b0f23778873d9961296"
+                "reference": "a75560c23514590e4a36b4dab7527e9253fc4a48"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/marc-mabe/php-enum/zipball/aa94dd121255747539807b0f23778873d9961296",
-                "reference": "aa94dd121255747539807b0f23778873d9961296",
+                "url": "https://api.github.com/repos/marc-mabe/php-enum/zipball/a75560c23514590e4a36b4dab7527e9253fc4a48",
+                "reference": "a75560c23514590e4a36b4dab7527e9253fc4a48",
                 "shasum": ""
             },
             "require": {
@@ -174,7 +174,7 @@
                 "type-hint",
                 "typehint"
             ],
-            "time": "2018-05-22T10:45:45+00:00"
+            "time": "2018-08-06T18:02:48+00:00"
         },
         {
             "name": "mockery/mockery",

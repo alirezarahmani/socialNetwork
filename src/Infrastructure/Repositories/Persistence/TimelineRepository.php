@@ -8,16 +8,16 @@ use Prooph\EventSourcing\AggregateRoot;
 use Prooph\EventSourcing\EventStoreIntegration\AggregateTranslator;
 use Prooph\EventStore\EventStore;
 use Ramsey\Uuid\Uuid;
-use SocialNetwork\Domain\Aggregates\WallAggregate;
+use SocialNetwork\Domain\Aggregates\TimelineAggregate;
 use SocialNetwork\Domain\Repository\Persistence\RepositoryInterface;
 
-class WallRepository extends AggregateRepository implements RepositoryInterface
+class TimelineRepository extends AggregateRepository implements RepositoryInterface
 {
     public function __construct(EventStore $eventStore)
     {
         parent::__construct(
             $eventStore,
-            AggregateType::fromAggregateRootClass(WallAggregate::class),
+            AggregateType::fromAggregateRootClass(TimelineAggregate::class),
             new AggregateTranslator(),
             null, //We don't use a snapshot FOR NOW
             null,

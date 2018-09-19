@@ -4,7 +4,7 @@ namespace SocialNetwork\Application\Commands;
 
 use Prooph\Common\Messaging\Command;
 
-class PostCommand extends Command implements CommandInterface
+class FollowCommand extends Command implements CommandInterface
 {
     /**
      * @var string
@@ -14,23 +14,23 @@ class PostCommand extends Command implements CommandInterface
     /**
      * @var string
      */
-    private $message;
+    private $follow;
 
     /**
      * @var string
      */
     protected $messageName;
 
-    public function __construct(string $username, string $message)
+    public function __construct(string $username, string $follow)
     {
         $this->username = $username;
-        $this->message = $message;
+        $this->follow = $follow;
         $this->messageName = __CLASS__;
     }
 
     public function payload(): array
     {
-        return ['username' => $this->username, 'message' => $this->message];
+        return ['username' => $this->username, 'follows' => $this->follow];
     }
 
     /**
@@ -40,6 +40,6 @@ class PostCommand extends Command implements CommandInterface
     protected function setPayload(array $payload): void
     {
         $this->username = $payload['username'];
-        $this->message = $payload['message'];
+        $this->follow = $payload['follow'];
     }
 }

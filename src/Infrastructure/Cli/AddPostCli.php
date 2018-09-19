@@ -6,7 +6,7 @@ use Boot\SocialNetwork;
 use Prooph\EventStore\Pdo\MySqlEventStore;
 use SocialNetwork\Application\Commands\PostCommand;
 use SocialNetwork\Domain\Handlers\AddPostHandler;
-use SocialNetwork\Infrastructure\Repositories\Persistence\WallRepository;
+use SocialNetwork\Infrastructure\Repositories\Persistence\TimelineRepository;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,7 +26,7 @@ class AddPostCli extends SocialNetworkCli
     public function execute(InputInterface $input, OutputInterface $output): void
     {
         $eventStore = SocialNetwork::getContainer()->get(MySqlEventStore::class);
-        $this->router->route(PostCommand::class)->to(new AddPostHandler(new WallRepository($eventStore)));
+        $this->router->route(PostCommand::class)->to(new AddPostHandler(new TimelineRepository($eventStore)));
         $this->router->attachToMessageBus($this->commandBus);
         $this->commandBus->dispatch(new PostCommand(
             $input->getArgument('username'),

@@ -170,4 +170,28 @@ class TimeService
     {
         return gmdate("H:i:s", $seconds);
     }
+
+    public function elapsed($time):string
+    {
+
+        $time = time() - $time; // to get the time since that moment
+        $time = ($time<1)? 1 : $time;
+        $tokens = array (
+            self::YEAR => 'year',
+            self::MONTH => 'month',
+            self::WEEK => 'week',
+            self::DAY => 'day',
+            self::HOUR => 'hour',
+            self::MINUTE => 'minute',
+            self::SECOND => 'second'
+        );
+
+        foreach ($tokens as $unit => $text) {
+            if ($time < $unit) {
+                continue;
+            }
+            $numberOfUnits = floor($time / $unit);
+            return '(' . $numberOfUnits.' '.$text.(($numberOfUnits>1)?'s':'') . ' ago)';
+        }
+    }
 }

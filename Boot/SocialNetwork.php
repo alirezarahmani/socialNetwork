@@ -7,7 +7,9 @@ use Prooph\EventStore\Pdo\MySqlEventStore;
 use Prooph\EventStore\Pdo\PersistenceStrategy\MySqlAggregateStreamStrategy;
 use Prooph\EventStore\Pdo\Projection\MySqlProjectionManager;
 use SocialNetwork\Application\Services\MemcachedService;
+use SocialNetwork\Application\Services\TimeService;
 use SocialNetwork\Application\Storage\MemcachedCacheStorage;
+use SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
@@ -35,6 +37,7 @@ class SocialNetwork
             $container = new ContainerBuilder(new ParameterBag());
             $container->register(MySqlAggregateStreamStrategy::class);
             $container->register(FQCNMessageFactory::class);
+            $container->register(TimeService::class);
             $container->register(\PDO::class, \PDO::class)
                 ->addArgument('mysql:host=mysql;port=3306;dbname=my_social_network;charset=utf8mb4')
                 ->addArgument('root')
@@ -47,6 +50,9 @@ class SocialNetwork
             $container->register(MemcachedService::class)->setPublic(true);
             $container->register(MemcachedCacheStorage::class)
                 ->addArgument(new Reference(MemcachedService::class))
+                ->setPublic(true);
+            $container->register(TimelineRepository::class)
+                ->addArgument(new Reference(MemcachedCacheStorage::class))
                 ->setPublic(true);
             $container->register(MySqlProjectionManager::class)
                 ->addArgument(new Reference(MySqlEventStore::class))

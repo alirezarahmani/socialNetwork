@@ -6,12 +6,13 @@ use SocialNetwork\Application\Storage\CacheIndex;
 use SocialNetwork\Application\Storage\CacheStorageInterface;
 use SocialNetwork\Domain\Repository\NonPersistence\RepositoryInterface;
 
-class WallRepository extends InMemoryRepository implements RepositoryInterface
+class TimelineRepository extends InMemoryRepository implements RepositoryInterface
 {
 
     private $cacheStorage;
 
     const USERNAME_INDEX = 'username_index';
+    const FOLLOWS_INDEX = 'follows_index';
 
     public function __construct(CacheStorageInterface $cacheStorage)
     {
@@ -27,6 +28,7 @@ class WallRepository extends InMemoryRepository implements RepositoryInterface
     {
         return [
             self::USERNAME_INDEX => new CacheIndex('username'),
+            self::FOLLOWS_INDEX => new CacheIndex('follows')
         ];
     }
 }

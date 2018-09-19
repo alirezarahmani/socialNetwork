@@ -6,8 +6,9 @@ use Prooph\EventSourcing\AggregateChanged;
 use Prooph\EventSourcing\AggregateRoot;
 use Ramsey\Uuid\Uuid;
 use SocialNetwork\Domain\Events\AddPost;
+use SocialNetwork\Domain\Events\Follows;
 
-class WallAggregate extends AggregateRoot
+class TimelineAggregate extends AggregateRoot
 {
     /**
      * @var Uuid
@@ -27,9 +28,29 @@ class WallAggregate extends AggregateRoot
     /**
      * @var string
      */
+    private $follows;
+
+    /**
+     * @var string
+     */
     private $createdAt;
 
-    public static function addPost(string $username, string $message, string $createdAt): WallAggregate
+    public static function follow(string $username, string $follows): TimelineAggregate
+    {
+        /**
+         * as we assume we are in sunny day, then there would be no validation
+         */
+        $instance = new self();
+        $instance->recordThat(
+            Follows::occur(
+                (Uuid::uuid4())->toString(),
+                ['username' => $username, 'follows' => $follows, 'createAt' => date("Y-m-d H:i:s")]
+            )
+        );
+        return $instance;
+    }
+
+    public static function addPost(string $username, string $message): TimelineAggregate
     {
         /**
          * as we assume we are in sunny day, then there would be no validation
@@ -38,7 +59,7 @@ class WallAggregate extends AggregateRoot
         $instance->recordThat(
             AddPost::occur(
                 (Uuid::uuid4())->toString(),
-                ['username' => $username, 'message' => $message, 'create_at' => $createdAt]
+                ['username' => $username, 'message' => $message, 'createAt' => date("Y-m-d H:i:s")]
             )
         );
         return $instance;

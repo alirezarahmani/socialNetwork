@@ -6,7 +6,7 @@ use SocialNetwork\Application\Commands\CommandInterface;
 use SocialNetwork\Domain\Aggregates\TimelineAggregate;
 use SocialNetwork\Domain\Repository\Persistence\RepositoryInterface;
 
-class AddPostHandler
+class FollowHandler
 {
     private $repository;
 
@@ -22,9 +22,9 @@ class AddPostHandler
          * according to GRASP, Creator pattern
          * https://en.wikipedia.org/wiki/GRASP_(object-oriented_design)#Creator
          */
-        $wall = TimelineAggregate::addPost(
+        $wall = TimelineAggregate::follow(
             $payload['username'],
-            $payload['message']
+            $payload['follows']
         );
         $this->repository->save($wall);
     }
