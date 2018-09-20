@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace SocialNetwork\Infrastructure\Cli\Output;
 
-use Assert\Assertion;
 use SocialNetwork\Application\Services\ApplicationServiceInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -12,11 +11,9 @@ class TimelineCliOutput extends ConsoleOutput
      * @param array                       $result
      * @param ApplicationServiceInterface $service
      *
-     * @throws \Assert\AssertionFailedException
      */
     public function success(array $result, ApplicationServiceInterface $service):void
     {
-        Assertion::keyIsset($result[0], 'username', 'sorry wrong input');
         $username = $result[0]['username'];
         $this->writeln('<info> > ' . $username . ':');
         foreach ($result as $key => $value) {
@@ -30,7 +27,7 @@ class TimelineCliOutput extends ConsoleOutput
         }
     }
 
-    public function failed(string $username)
+    public function failed(string $username):void
     {
         $this->writeln('<error>' . $username . ' has not posted yet!</error>');
     }

@@ -5,7 +5,6 @@ namespace SocialNetwork\Projections;
 use Boot\SocialNetwork;
 use Prooph\EventStore\Pdo\Projection\MySqlProjectionManager;
 use SocialNetwork\Domain\Aggregates\TimelineAggregate;
-use SocialNetwork\Domain\Events\AddPost;
 use SocialNetwork\Domain\Events\Follows;
 use SocialNetwork\Domain\Repository\NonPersistence\RepositoryInterface;
 use SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository;

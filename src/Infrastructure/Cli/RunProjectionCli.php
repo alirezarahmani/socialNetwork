@@ -22,9 +22,7 @@ class RunProjectionCli extends SocialNetworkCli
 
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        $postProjection = $this->container->get(PostProjection::class);
-        $postProjection->runAddPost();
-        $followProjection = $this->container->get(FollowProjection::class);
-        $followProjection->runFollows();
+        $this->container->get(PostProjection::class)->runAddPost();
+        $this->container->get(FollowProjection::class)->runFollows();
     }
 }

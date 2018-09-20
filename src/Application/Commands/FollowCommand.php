@@ -14,23 +14,23 @@ class FollowCommand extends Command implements CommandInterface
     /**
      * @var string
      */
-    private $follow;
+    private $follows;
 
     /**
      * @var string
      */
     protected $messageName;
 
-    public function __construct(string $username, string $follow)
+    public function __construct(string $username, string $follows)
     {
         $this->username = $username;
-        $this->follow = $follow;
+        $this->follows = $follows;
         $this->messageName = __CLASS__;
     }
 
     public function payload(): array
     {
-        return ['username' => $this->username, 'follows' => $this->follow];
+        return ['username' => $this->username, 'follows' => $this->follows];
     }
 
     /**
@@ -40,6 +40,6 @@ class FollowCommand extends Command implements CommandInterface
     protected function setPayload(array $payload): void
     {
         $this->username = $payload['username'];
-        $this->follow = $payload['follow'];
+        $this->follows = $payload['follows'];
     }
 }

@@ -17,13 +17,14 @@ abstract class InMemoryRepository
     public function addByIndex(string $index, array $values): void
     {
         Assertion::keyExists($indices = static::cacheIndices(), $index, 'wrong cache indices index, the index: ' . $index . ' not exist!');
-        $indict = $indices[$index];
+        $indices = $indices[$index];
+        Assertion::keyExists($values, $indices->getField(), 'wrong values to insert, unable to find field :' . $indices->getField());
         $result[] = $values;
-        if ($data = static::getCacheStorage()->get($indict->getKey($index, $values[$indict->getField()]))) {
+        if ($data = static::getCacheStorage()->get($indices->getKey($index, $values[$indices->getField()]))) {
+            // append new values to data
             $data[] = $values;
             $result = $data;
         }
-        Assertion::keyExists($values, $indict->getField(), 'wrong values to insert, unable to find :' . $indict->getField());
-        static::getCacheStorage()->set($indict->getKey($index, $values[$indict->getField()]), $result, TimeService::MONTH);
+        static::getCacheStorage()->set($indices->getKey($index, $values[$indices->getField()]), $result, TimeService::MONTH);
     }
 }

@@ -11,7 +11,6 @@ use SocialNetwork\Domain\Repository\NonPersistence\RepositoryInterface;
 
 class TimelineRepository extends InMemoryRepository implements RepositoryInterface
 {
-
     private $cacheStorage;
 
     const READ_INDEX = 'username_index';
@@ -32,12 +31,12 @@ class TimelineRepository extends InMemoryRepository implements RepositoryInterfa
         ];
     }
 
-    public function getCacheStorage():CacheStorageInterface
+    public function getCacheStorage(): CacheStorageInterface
     {
         return $this->cacheStorage;
     }
 
-    public function addNewPost(AddPost $event)
+    public function addNewPost(AddPost $event): void
     {
         $payload = $event->payload();
         $this->addByIndex(self::READ_INDEX, $payload);
@@ -53,16 +52,16 @@ class TimelineRepository extends InMemoryRepository implements RepositoryInterfa
     {
         Assertion::keyExists($indices = static::cacheIndices(), $index, 'wrong cache indices index, the index: ' . $index . ' not exist!');
         $indict = $indices[$index];
+        Assertion::keyExists($values, $indict->getField(), 'wrong values to insert, unable to find :' . $indict->getField());
         $result[] = $values;
         if ($data = static::getCacheStorage()->get($indict->getKey($index, $follower))) {
             $data[] = $values;
             $result = $data;
         }
-        Assertion::keyExists($values, $indict->getField(), 'wrong values to insert, unable to find :' . $indict->getField());
         static::getCacheStorage()->set($indict->getKey($index, $follower), $result, TimeService::MONTH);
     }
 
-    private function getFollowersByUsername(string $username)
+    private function getFollowersByUsername(string $username): array
     {
         $result =  $this->findByIndex(self::FOLLOWS_INDEX, $username);
         if (empty($result)) {

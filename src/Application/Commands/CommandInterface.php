@@ -4,5 +4,4 @@ namespace SocialNetwork\Application\Commands;
 
 interface CommandInterface
 {
-
 }

@@ -18,6 +18,7 @@ use SocialNetwork\Domain\Handlers\FollowHandler;
 use SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository;
 use SocialNetwork\Projections\FollowProjection;
 use SocialNetwork\Projections\PostProjection;
+use SocialNetwork\Infrastructure\Repositories\Persistence\TimelineRepository as PTR;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
@@ -68,7 +69,7 @@ class SocialNetwork
             $container->register(PostProjection::class)
                 ->addArgument(new Reference(TimelineRepository::class))
                 ->setPublic(true);
-            $container->register(\SocialNetwork\Infrastructure\Repositories\Persistence\TimelineRepository::class)
+            $container->register(PTR::class)
                 ->addArgument(new Reference(MySqlEventStore::class))
                 ->setPublic(true);
             $container->register(MySqlProjectionManager::class)
@@ -102,23 +103,13 @@ class SocialNetwork
     public static function router(Container $container, CommandBus $commandBus)
     {
         $router = new CommandRouter();
-        $router->route(PostCommand::class)->to(
-            new AddPostHandler(
-                $container->get(
-                    \SocialNetwork\Infrastructure\Repositories\Persistence\TimelineRepository::class
-                )
-            )
-        );
-        $router->route(FollowCommand::class)->to(
-            new FollowHandler(
-                $container->get(\SocialNetwork\Infrastructure\Repositories\Persistence\TimelineRepository::class)
-            )
-        );
+        $router->route(PostCommand::class)->to(new AddPostHandler($container->get(PTR::class)));
+        $router->route(FollowCommand::class)->to(new FollowHandler($container->get(PTR::class)));
         $router->attachToMessageBus($commandBus);
     }
 
     private static function addEventSubscribers(): void
     {
-        //@todo : fill this.
+        //@todo : do something here.
     }
 }

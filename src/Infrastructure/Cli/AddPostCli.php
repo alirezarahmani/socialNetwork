@@ -17,7 +17,7 @@ class AddPostCli extends SocialNetworkCli
         parent::__construct($commandBus, $container);
     }
 
-    protected function configure(): void
+    protected function configure():void
     {
         $this
             ->setName('posting')
@@ -26,7 +26,7 @@ class AddPostCli extends SocialNetworkCli
             ->addArgument('message', InputArgument::REQUIRED, 'the name of user');
     }
 
-    public function execute(InputInterface $input, OutputInterface $output): void
+    public function execute(InputInterface $input, OutputInterface $output):void
     {
         $this->commandBus->dispatch(new PostCommand(
             $input->getFirstArgument(),

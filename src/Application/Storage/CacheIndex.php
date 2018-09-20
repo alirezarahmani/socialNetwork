@@ -4,7 +4,7 @@ namespace SocialNetwork\Application\Storage;
 
 class CacheIndex
 {
-    private const KEY = 'Storage:';
+    private const KEY_PREFIX = 'Storage:';
     private $field;
 
     public function __construct(string $field)
@@ -19,6 +19,6 @@ class CacheIndex
 
     public function getKey(string $index, string $value)
     {
-        return self::KEY . ':' . $index . ':' . static::class . ':' . $this->field . ':' . $value;
+        return self::KEY_PREFIX . ':' . $index . ':' . static::class . ':' . $this->field . ':' . $value;
     }
 }

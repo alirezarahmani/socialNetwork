@@ -25,9 +25,9 @@ class TimelineRepository extends AggregateRepository implements RepositoryInterf
         );
     }
 
-    public function save(AggregateRoot $wall): void
+    public function save(AggregateRoot $timeline): void
     {
-        $this->saveAggregateRoot($wall);
+        $this->saveAggregateRoot($timeline);
     }
 
     public function get(Uuid $uuid): ?AggregateRoot

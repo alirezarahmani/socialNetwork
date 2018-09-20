@@ -11,7 +11,5 @@ fi
 
 docker-compose build
 docker-compose up -d
-docker-compose exec worker composer update
-docker-compose down
-docker-compose up -d
-
+docker-compose exec worker composer install
+docker-compose exec worker php console run:timeline:projection
