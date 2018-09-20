@@ -4,20 +4,20 @@ namespace SocialNetwork\Infrastructure\Cli;
 
 use Boot\SocialNetwork;
 use Prooph\ServiceBus\CommandBus;
-use Prooph\ServiceBus\Plugin\Router\CommandRouter;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\DependencyInjection\Container;
 
 abstract class SocialNetworkCli extends Command
 {
     protected $commandBus;
-    protected $router;
+    protected $container;
 
-    public function __construct(?string $name = null)
+    public function __construct(?CommandBus $commandBus, Container $container)
     {
-        parent::__construct($name);
+        parent::__construct(null);
         SocialNetwork::create();
         $this->addOption('force');
-        $this->commandBus = new CommandBus();
-        $this->router = new CommandRouter();
+        $this->commandBus = $commandBus;
+        $this->container = $container;
     }
 }

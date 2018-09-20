@@ -1,0 +1,57 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__.'/vendor/autoload.php';
+
+use SocialNetwork\Infrastructure\Cli\AddPostCli;
+use SocialNetwork\Infrastructure\Cli\FollowCli;
+use SocialNetwork\Infrastructure\Cli\Output\ReadCliOutput;
+use SocialNetwork\Infrastructure\Cli\ReadCli;
+use SocialNetwork\Infrastructure\Cli\RunProjectionCli;
+use SocialNetwork\Infrastructure\Cli\WallCli;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+\Boot\SocialNetwork::create();
+$container = \Boot\SocialNetwork::getContainer();
+\Boot\SocialNetwork::router($container, $commandBus = new \Prooph\ServiceBus\CommandBus());
+$application = new Application();
+$input = new ArgvInput($argv = $_SERVER['argv']);
+$output = new ConsoleOutput();
+array_shift($argv);
+
+switch (count($argv)) {
+    case 1:
+        if ($argv[0] == 'run:timeline:projection') {
+            $application->add(new RunProjectionCli($container))->run(
+                $input,
+                $output
+            );
+            break;
+        }
+        $application->add(new ReadCli($container))->run(
+            $input,
+            new ReadCliOutput()
+        );
+        break;
+    case 2:
+        $application->add(new WallCli($container))->run(
+            $input,
+            new ReadCliOutput()
+        );
+        break;
+    case 3:
+        if ($argv[1] == 'follows') {
+            $application->add(new FollowCli($commandBus, $container))->run(
+                $input,
+                $output
+            );
+            break;
+        }
+        $application->add(new AddPostCli($commandBus, $container))->run(
+            $input,
+            $output
+        );
+        break;
+}

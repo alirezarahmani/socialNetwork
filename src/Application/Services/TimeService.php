@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace SocialNetwork\Application\Services;
 
-class TimeService
+class TimeService implements ApplicationServiceInterface
 {
 
     const SECOND = 1;

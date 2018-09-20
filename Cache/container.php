@@ -31,7 +31,11 @@ class MyCachedContainer extends Container
             'Prooph\\EventStore\\Pdo\\MySqlEventStore' => 'getMySqlEventStoreService',
             'Prooph\\EventStore\\Pdo\\Projection\\MySqlProjectionManager' => 'getMySqlProjectionManagerService',
             'SocialNetwork\\Application\\Services\\MemcachedService' => 'getMemcachedServiceService',
+            'SocialNetwork\\Application\\Services\\TimeService' => 'getTimeServiceService',
             'SocialNetwork\\Application\\Storage\\MemcachedCacheStorage' => 'getMemcachedCacheStorageService',
+            'SocialNetwork\\Infrastructure\\Repositories\\NonPersistence\\TimelineRepository' => 'getTimelineRepositoryService',
+            'SocialNetwork\\Infrastructure\\Repositories\\Persistence\\TimelineRepository' => 'getTimelineRepository2Service',
+            'SocialNetwork\\Projections\\TimelineProjection' => 'getTimelineProjectionService',
             'Symfony\\Component\\EventDispatcher\\EventDispatcher' => 'getEventDispatcherService',
         );
 
@@ -96,6 +100,16 @@ class MyCachedContainer extends Container
     }
 
     /**
+     * Gets the public 'SocialNetwork\Application\Services\TimeService' shared service.
+     *
+     * @return \SocialNetwork\Application\Services\TimeService
+     */
+    protected function getTimeServiceService()
+    {
+        return $this->services['SocialNetwork\Application\Services\TimeService'] = new \SocialNetwork\Application\Services\TimeService();
+    }
+
+    /**
      * Gets the public 'SocialNetwork\Application\Storage\MemcachedCacheStorage' shared service.
      *
      * @return \SocialNetwork\Application\Storage\MemcachedCacheStorage
@@ -103,6 +117,36 @@ class MyCachedContainer extends Container
     protected function getMemcachedCacheStorageService()
     {
         return $this->services['SocialNetwork\Application\Storage\MemcachedCacheStorage'] = new \SocialNetwork\Application\Storage\MemcachedCacheStorage(($this->services['SocialNetwork\Application\Services\MemcachedService'] ?? $this->services['SocialNetwork\Application\Services\MemcachedService'] = new \SocialNetwork\Application\Services\MemcachedService()));
+    }
+
+    /**
+     * Gets the public 'SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository' shared service.
+     *
+     * @return \SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository
+     */
+    protected function getTimelineRepositoryService()
+    {
+        return $this->services['SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository'] = new \SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository(($this->services['SocialNetwork\Application\Storage\MemcachedCacheStorage'] ?? $this->getMemcachedCacheStorageService()));
+    }
+
+    /**
+     * Gets the public 'SocialNetwork\Infrastructure\Repositories\Persistence\TimelineRepository' shared service.
+     *
+     * @return \SocialNetwork\Infrastructure\Repositories\Persistence\TimelineRepository
+     */
+    protected function getTimelineRepository2Service()
+    {
+        return $this->services['SocialNetwork\Infrastructure\Repositories\Persistence\TimelineRepository'] = new \SocialNetwork\Infrastructure\Repositories\Persistence\TimelineRepository(($this->services['Prooph\EventStore\Pdo\MySqlEventStore'] ?? $this->getMySqlEventStoreService()));
+    }
+
+    /**
+     * Gets the public 'SocialNetwork\Projections\TimelineProjection' shared service.
+     *
+     * @return \SocialNetwork\Projections\TimelineProjection
+     */
+    protected function getTimelineProjectionService()
+    {
+        return $this->services['SocialNetwork\Projections\TimelineProjection'] = new \SocialNetwork\Projections\TimelineProjection(($this->services['SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository'] ?? $this->getTimelineRepositoryService()));
     }
 
     /**

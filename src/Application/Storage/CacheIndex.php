@@ -17,8 +17,8 @@ class CacheIndex
         return $this->field;
     }
 
-    public function getKey(string $value)
+    public function getKey(string $index, string $value)
     {
-        return self::KEY . ':' . static::class . ':' . $this->field . ':' . $value;
+        return self::KEY . ':' . $index . ':' . static::class . ':' . $this->field . ':' . $value;
     }
 }

@@ -40,11 +40,12 @@ class TimelineProjection
 
     public function runAddPost():void
     {
+        /** @var TimelineRepository $repository */
         $repository = $this->repository;
         $this->projection->fromCategory(TimelineAggregate::class)
             ->when(
                 [AddPost::class => function (array $state, AddPost $event) use ($repository):void {
-                    $repository->addByIndex(TimelineRepository::USERNAME_INDEX, $event->payload());
+                    $repository->addNewPost($event);
                 }]
             )->run();
     }

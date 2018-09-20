@@ -11,7 +11,7 @@ abstract class InMemoryRepository
     {
         $indices = static::cacheIndices();
         Assertion::keyExists($indices, $index, 'wrong cache indices index, the index: ' . $index . ' not exist!');
-        return static::getCacheStorage()->get($indices[$index]->getKey($value));
+        return static::getCacheStorage()->get($indices[$index]->getKey($index, $value));
     }
 
     public function addByIndex(string $index, array $values): void
@@ -19,11 +19,11 @@ abstract class InMemoryRepository
         Assertion::keyExists($indices = static::cacheIndices(), $index, 'wrong cache indices index, the index: ' . $index . ' not exist!');
         $indict = $indices[$index];
         $result[] = $values;
-        if ($data = static::getCacheStorage()->get($indict->getKey($values[$indict->getField()]))) {
+        if ($data = static::getCacheStorage()->get($indict->getKey($index, $values[$indict->getField()]))) {
             $data[] = $values;
             $result = $data;
         }
         Assertion::keyExists($values, $indict->getField(), 'wrong values to insert, unable to find :' . $indict->getField());
-        static::getCacheStorage()->set($indict->getKey($values[$indict->getField()]), $result, TimeService::MONTH);
+        static::getCacheStorage()->set($indict->getKey($index, $values[$indict->getField()]), $result, TimeService::MONTH);
     }
 }
