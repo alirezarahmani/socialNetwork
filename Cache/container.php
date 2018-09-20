@@ -35,7 +35,8 @@ class MyCachedContainer extends Container
             'SocialNetwork\\Application\\Storage\\MemcachedCacheStorage' => 'getMemcachedCacheStorageService',
             'SocialNetwork\\Infrastructure\\Repositories\\NonPersistence\\TimelineRepository' => 'getTimelineRepositoryService',
             'SocialNetwork\\Infrastructure\\Repositories\\Persistence\\TimelineRepository' => 'getTimelineRepository2Service',
-            'SocialNetwork\\Projections\\TimelineProjection' => 'getTimelineProjectionService',
+            'SocialNetwork\\Projections\\FollowProjection' => 'getFollowProjectionService',
+            'SocialNetwork\\Projections\\PostProjection' => 'getPostProjectionService',
             'Symfony\\Component\\EventDispatcher\\EventDispatcher' => 'getEventDispatcherService',
         );
 
@@ -140,13 +141,23 @@ class MyCachedContainer extends Container
     }
 
     /**
-     * Gets the public 'SocialNetwork\Projections\TimelineProjection' shared service.
+     * Gets the public 'SocialNetwork\Projections\FollowProjection' shared service.
      *
-     * @return \SocialNetwork\Projections\TimelineProjection
+     * @return \SocialNetwork\Projections\FollowProjection
      */
-    protected function getTimelineProjectionService()
+    protected function getFollowProjectionService()
     {
-        return $this->services['SocialNetwork\Projections\TimelineProjection'] = new \SocialNetwork\Projections\TimelineProjection(($this->services['SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository'] ?? $this->getTimelineRepositoryService()));
+        return $this->services['SocialNetwork\Projections\FollowProjection'] = new \SocialNetwork\Projections\FollowProjection(($this->services['SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository'] ?? $this->getTimelineRepositoryService()));
+    }
+
+    /**
+     * Gets the public 'SocialNetwork\Projections\PostProjection' shared service.
+     *
+     * @return \SocialNetwork\Projections\PostProjection
+     */
+    protected function getPostProjectionService()
+    {
+        return $this->services['SocialNetwork\Projections\PostProjection'] = new \SocialNetwork\Projections\PostProjection(($this->services['SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository'] ?? $this->getTimelineRepositoryService()));
     }
 
     /**

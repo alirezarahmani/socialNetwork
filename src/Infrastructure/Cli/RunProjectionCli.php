@@ -2,7 +2,8 @@
 declare(strict_types=1);
 namespace SocialNetwork\Infrastructure\Cli;
 
-use SocialNetwork\Projections\TimelineProjection;
+use SocialNetwork\Projections\FollowProjection;
+use SocialNetwork\Projections\PostProjection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Container;
@@ -21,8 +22,9 @@ class RunProjectionCli extends SocialNetworkCli
 
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        $timelineProjection = $this->container->get(TimelineProjection::class);
-        $timelineProjection->runAddPost();
-//        $timelineProjection->runFollows();
+        $postProjection = $this->container->get(PostProjection::class);
+        $postProjection->runAddPost();
+        $followProjection = $this->container->get(FollowProjection::class);
+        $followProjection->runFollows();
     }
 }

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 namespace SocialNetwork\Application\Services;
 
-class MemcachedService
+class MemcachedService implements ApplicationServiceInterface
 {
 
     /**

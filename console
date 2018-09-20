@@ -5,7 +5,7 @@ require __DIR__.'/vendor/autoload.php';
 
 use SocialNetwork\Infrastructure\Cli\AddPostCli;
 use SocialNetwork\Infrastructure\Cli\FollowCli;
-use SocialNetwork\Infrastructure\Cli\Output\ReadCliOutput;
+use SocialNetwork\Infrastructure\Cli\Output\TimelineCliOutput;
 use SocialNetwork\Infrastructure\Cli\ReadCli;
 use SocialNetwork\Infrastructure\Cli\RunProjectionCli;
 use SocialNetwork\Infrastructure\Cli\WallCli;
@@ -32,13 +32,13 @@ switch (count($argv)) {
         }
         $application->add(new ReadCli($container))->run(
             $input,
-            new ReadCliOutput()
+            new TimelineCliOutput()
         );
         break;
     case 2:
         $application->add(new WallCli($container))->run(
             $input,
-            new ReadCliOutput()
+            new TimelineCliOutput()
         );
         break;
     case 3:

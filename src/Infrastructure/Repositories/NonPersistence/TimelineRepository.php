@@ -2,6 +2,8 @@
 declare(strict_types=1);
 namespace SocialNetwork\Infrastructure\Repositories\NonPersistence;
 
+use Assert\Assertion;
+use SocialNetwork\Application\Services\TimeService;
 use SocialNetwork\Application\Storage\CacheIndex;
 use SocialNetwork\Application\Storage\CacheStorageInterface;
 use SocialNetwork\Domain\Events\AddPost;
@@ -43,10 +45,21 @@ class TimelineRepository extends InMemoryRepository implements RepositoryInterfa
         $followers = $this->getFollowersByUsername($payload['username']);
         // post to followers timeline too.
         foreach ($followers as $follower) {
-            $newPayload = $payload;
-            $newPayload['username'] = $follower;
-            $this->addByIndex(self::TIMELINE_INDEX, $newPayload);
+            $this->addToFollowerWallByIndex(self::TIMELINE_INDEX, $follower, $payload);
         }
+    }
+
+    public function addToFollowerWallByIndex(string $index, string $follower, array $values): void
+    {
+        Assertion::keyExists($indices = static::cacheIndices(), $index, 'wrong cache indices index, the index: ' . $index . ' not exist!');
+        $indict = $indices[$index];
+        $result[] = $values;
+        if ($data = static::getCacheStorage()->get($indict->getKey($index, $follower))) {
+            $data[] = $values;
+            $result = $data;
+        }
+        Assertion::keyExists($values, $indict->getField(), 'wrong values to insert, unable to find :' . $indict->getField());
+        static::getCacheStorage()->set($indict->getKey($index, $follower), $result, TimeService::MONTH);
     }
 
     private function getFollowersByUsername(string $username)
@@ -55,6 +68,7 @@ class TimelineRepository extends InMemoryRepository implements RepositoryInterfa
         if (empty($result)) {
             return [];
         }
-        return array_column($result, 'username');
+        // as we assume we are in sunny day
+        return array_unique(array_column($result, 'username'));
     }
 }

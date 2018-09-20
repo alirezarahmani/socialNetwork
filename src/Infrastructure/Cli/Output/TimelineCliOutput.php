@@ -6,7 +6,7 @@ use Assert\Assertion;
 use SocialNetwork\Application\Services\ApplicationServiceInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
-class ReadCliOutput extends ConsoleOutput
+class TimelineCliOutput extends ConsoleOutput
 {
     /**
      * @param array                       $result
@@ -17,13 +17,16 @@ class ReadCliOutput extends ConsoleOutput
     public function success(array $result, ApplicationServiceInterface $service):void
     {
         Assertion::keyIsset($result[0], 'username', 'sorry wrong input');
-        $this->writeln('<info> > ' . $result[0]['username'] . ':');
+        $username = $result[0]['username'];
+        $this->writeln('<info> > ' . $username . ':');
         foreach ($result as $key => $value) {
+            if ($username != $value['username']) {
+                $this->writeln('<info> > ' . $value['username'] . ':');
+                $username = $value['username'];
+            }
             unset($value['username']);
             $value['createAt'] = $service->elapsed(strtotime($value['createAt']));
-            $data = is_array($value) ? implode(' ', $value) : $value;
-            $this->writeln('<info> | ' . $data);
-
+            $this->writeln('<info>| ' . is_array($value) ? implode(' ', $value) : $value . '</info>');
         }
     }
 

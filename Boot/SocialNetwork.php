@@ -16,7 +16,8 @@ use SocialNetwork\Application\Storage\MemcachedCacheStorage;
 use SocialNetwork\Domain\Handlers\AddPostHandler;
 use SocialNetwork\Domain\Handlers\FollowHandler;
 use SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository;
-use SocialNetwork\Projections\TimelineProjection;
+use SocialNetwork\Projections\FollowProjection;
+use SocialNetwork\Projections\PostProjection;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
@@ -61,7 +62,10 @@ class SocialNetwork
             $container->register(TimelineRepository::class)
                 ->addArgument(new Reference(MemcachedCacheStorage::class))
                 ->setPublic(true);
-            $container->register(TimelineProjection::class)
+            $container->register(FollowProjection::class)
+                ->addArgument(new Reference(TimelineRepository::class))
+                ->setPublic(true);
+            $container->register(PostProjection::class)
                 ->addArgument(new Reference(TimelineRepository::class))
                 ->setPublic(true);
             $container->register(\SocialNetwork\Infrastructure\Repositories\Persistence\TimelineRepository::class)
