@@ -4,6 +4,7 @@ namespace SocialNetwork\Projections;
 
 use Boot\SocialNetwork;
 use Prooph\EventStore\Pdo\Projection\MySqlProjectionManager;
+use Prooph\EventStore\Projection\ProjectionManager;
 use SocialNetwork\Domain\Aggregates\TimelineAggregate;
 use SocialNetwork\Domain\Events\AddPost;
 use SocialNetwork\Domain\Events\Follows;
@@ -19,11 +20,9 @@ class PostProjection
     /** @var MySqlProjectionManager */
     private $projection;
 
-    public function __construct(RepositoryInterface $repository)
+    public function __construct(RepositoryInterface $repository, ProjectionManager $projectionManager)
     {
         $this->repository = $repository;
-        /** @var MySqlProjectionManager $projectionManager */
-        $projectionManager = SocialNetwork::getContainer()->get(MySqlProjectionManager::class);
         $this->projection = $projectionManager->createProjection(self::PROJECTION_NAME);
     }
 

@@ -63,20 +63,22 @@ class SocialNetwork
             $container->register(TimelineRepository::class)
                 ->addArgument(new Reference(MemcachedCacheStorage::class))
                 ->setPublic(true);
-            $container->register(FollowProjection::class)
-                ->addArgument(new Reference(TimelineRepository::class))
-                ->setPublic(true);
-            $container->register(PostProjection::class)
-                ->addArgument(new Reference(TimelineRepository::class))
-                ->setPublic(true);
-            $container->register(PTR::class)
-                ->addArgument(new Reference(MySqlEventStore::class))
-                ->setPublic(true);
             $container->register(MySqlProjectionManager::class)
                 ->addArgument(new Reference(MySqlEventStore::class))
                 ->addArgument(new Reference(\PDO::class))
                 ->addArgument('event_streams')
                 ->addArgument('projections')
+                ->setPublic(true);
+            $container->register(FollowProjection::class)
+                ->addArgument(new Reference(TimelineRepository::class))
+                ->addArgument(new Reference(MySqlProjectionManager::class))
+                ->setPublic(true);
+            $container->register(PostProjection::class)
+                ->addArgument(new Reference(TimelineRepository::class))
+                ->addArgument(new Reference(MySqlProjectionManager::class))
+                ->setPublic(true);
+            $container->register(PTR::class)
+                ->addArgument(new Reference(MySqlEventStore::class))
                 ->setPublic(true);
             $container->compile();
             file_put_contents($cachedContainerFile, (new PhpDumper($container))->dump(['class' => $compiledClassName]));

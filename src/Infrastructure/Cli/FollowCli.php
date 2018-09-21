@@ -26,7 +26,7 @@ class FollowCli extends SocialNetworkCli
         ));
 
         $output->writeln(
-            '<info> Well done! The '. $input->getFirstArgument() .' now, is following ' . $input->getArgument('follows') . ' </info>'
+            '<info> Well done! '. $input->getFirstArgument() .' now, is following ' . $input->getArgument('follows') . ' </info>'
         );
     }
 }

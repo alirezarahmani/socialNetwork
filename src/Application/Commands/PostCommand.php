@@ -28,6 +28,17 @@ class PostCommand extends Command implements CommandInterface
         $this->messageName = __CLASS__;
     }
 
+
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+    
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
     public function payload(): array
     {
         return ['username' => $this->username, 'message' => $this->message];

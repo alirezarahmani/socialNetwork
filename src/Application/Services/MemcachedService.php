@@ -46,7 +46,7 @@ class MemcachedService implements ApplicationServiceInterface
 
     public function setExpire(string $key, $value, int $ttl): void
     {
-        if ($ttl > 2592000) {
+        if ($ttl > TimeService::MONTH) {
             throw new InvalidArgumentException("TTL too big: $ttl");
         }
         $this->executeCommand('set', [$key, $value, $ttl]);

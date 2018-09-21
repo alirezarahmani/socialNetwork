@@ -2,21 +2,13 @@
 declare(strict_types=1);
 namespace SocialNetwork\Infrastructure\Cli;
 
-use Prooph\ServiceBus\CommandBus;
 use SocialNetwork\Application\Commands\PostCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\Container;
 
 class AddPostCli extends SocialNetworkCli
 {
-
-    public function __construct(CommandBus $commandBus, Container $container)
-    {
-        parent::__construct($commandBus, $container);
-    }
-
     protected function configure():void
     {
         $this

@@ -28,6 +28,16 @@ class FollowCommand extends Command implements CommandInterface
         $this->messageName = __CLASS__;
     }
 
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    public function getFollows(): string
+    {
+        return $this->follows;
+    }
+
     public function payload(): array
     {
         return ['username' => $this->username, 'follows' => $this->follows];

@@ -13,7 +13,6 @@ class ReadCli extends SocialNetworkCli
     public function __construct(Container $container)
     {
         parent::__construct(null, $container);
-        $this->container = $container;
     }
 
     protected function configure()

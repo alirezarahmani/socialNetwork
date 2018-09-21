@@ -12,10 +12,9 @@ abstract class SocialNetworkCli extends Command
     protected $commandBus;
     protected $container;
 
-    public function __construct(?CommandBus $commandBus, Container $container)
+    public function __construct(?CommandBus $commandBus, Container $container = null)
     {
         parent::__construct(null);
-        SocialNetwork::create();
         $this->addOption('force');
         $this->commandBus = $commandBus;
         $this->container = $container;

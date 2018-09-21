@@ -7,7 +7,7 @@ use SocialNetwork\Application\Services\TimeService;
 
 abstract class InMemoryRepository
 {
-    public function findByIndex(string $index, $value):?array
+    public function findByIndex(string $index, $value): ?array
     {
         $indices = static::cacheIndices();
         Assertion::keyExists($indices, $index, 'wrong cache indices index, the index: ' . $index . ' not exist!');
@@ -21,7 +21,7 @@ abstract class InMemoryRepository
         Assertion::keyExists($values, $indices->getField(), 'wrong values to insert, unable to find field :' . $indices->getField());
         $result[] = $values;
         if ($data = static::getCacheStorage()->get($indices->getKey($index, $values[$indices->getField()]))) {
-            // append new values to data
+            // append new values
             $data[] = $values;
             $result = $data;
         }
