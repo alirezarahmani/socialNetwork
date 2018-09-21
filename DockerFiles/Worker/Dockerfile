@@ -79,11 +79,6 @@ RUN echo "xdebug.profiler_enable_trigger=1" >> /etc/php/7.2/fpm/conf.d/20-xdebug
 RUN echo "xdebug.profiler_output_name= cachegrind.out" >> /etc/php/7.2/fpm/conf.d/20-xdebug.ini
 RUN mkdir /root/.ssh/
 
-
-ADD default.conf /etc/nginx/conf.d/default.conf
-ADD default.conf /etc/nginx/sites-enabled/default
-ADD default.conf /etc/nginx/sites-available/default
-
 EXPOSE 22 443 80
 WORKDIR /var/www/
 

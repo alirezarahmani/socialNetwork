@@ -15,10 +15,18 @@ use SocialNetwork\Application\Services\TimeService;
 use SocialNetwork\Application\Storage\MemcachedCacheStorage;
 use SocialNetwork\Domain\Handlers\AddPostHandler;
 use SocialNetwork\Domain\Handlers\FollowHandler;
+use SocialNetwork\Infrastructure\Cli\AddPostCli;
+use SocialNetwork\Infrastructure\Cli\FollowCli;
+use SocialNetwork\Infrastructure\Cli\Output\TimelineCliOutput;
+use SocialNetwork\Infrastructure\Cli\ReadCli;
+use SocialNetwork\Infrastructure\Cli\RunProjectionCli;
+use SocialNetwork\Infrastructure\Cli\WallCli;
 use SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository;
-use SocialNetwork\Projections\FollowProjection;
-use SocialNetwork\Projections\PostProjection;
+use SocialNetwork\Projections\TimelineProjection;
 use SocialNetwork\Infrastructure\Repositories\Persistence\TimelineRepository as PTR;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
@@ -29,6 +37,13 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SocialNetwork
 {
+    const PRODUCTION = 'Prod';
+    const TEST = 'Test';
+    const MODE = [
+        self::PRODUCTION,
+        self::TEST
+    ];
+
     private static $containerBuilder;
 
     private function __construct(Container $containerBuilder)
@@ -36,11 +51,11 @@ class SocialNetwork
         self::$containerBuilder = $containerBuilder;
     }
 
-    public static function create(): void
+    public static function create($mode = self::PRODUCTION): self
     {
-        $compiledClassName = 'MyCachedContainer';
+        $compiledClassName = 'MyCachedContainer' . $mode;
         $cacheDir = getenv('VENDOR_DIR') . '/../cache/';
-        $cachedContainerFile = "{$cacheDir}container" . '.php';
+        $cachedContainerFile = "{$cacheDir}container" . $mode . '.php';
 
         if (!is_file($cachedContainerFile)) {
             $container = new ContainerBuilder(new ParameterBag());
@@ -69,11 +84,7 @@ class SocialNetwork
                 ->addArgument('event_streams')
                 ->addArgument('projections')
                 ->setPublic(true);
-            $container->register(FollowProjection::class)
-                ->addArgument(new Reference(TimelineRepository::class))
-                ->addArgument(new Reference(MySqlProjectionManager::class))
-                ->setPublic(true);
-            $container->register(PostProjection::class)
+            $container->register(TimelineProjection::class)
                 ->addArgument(new Reference(TimelineRepository::class))
                 ->addArgument(new Reference(MySqlProjectionManager::class))
                 ->setPublic(true);
@@ -93,8 +104,8 @@ class SocialNetwork
         $container =  new $compiledClassName();
         $request = Request::createFromGlobals();
         $container->set(Request::class, $request);
-        new static($container);
         self::addEventSubscribers();
+        return new static($container);
     }
 
     public static function getContainer(): Container
@@ -113,5 +124,51 @@ class SocialNetwork
     private static function addEventSubscribers(): void
     {
         //@todo : do something here.
+    }
+
+    public static function console(Container $container, CommandBus $commandBus)
+    {
+        $application = new Application();
+        $input = new ArgvInput($argv = $_SERVER['argv']);
+        $output = new ConsoleOutput();
+        array_shift($argv);
+
+        /**
+         * no validation here
+         */
+        switch (count($argv)) {
+            case 1:
+                if ($argv[0] == 'run:timeline:projection') {
+                    $application->add(new RunProjectionCli($container))->run(
+                        $input,
+                        $output
+                    );
+                    break;
+                }
+                $application->add(new ReadCli($container))->run(
+                    $input,
+                    new TimelineCliOutput()
+                );
+                break;
+            case 2:
+                $application->add(new WallCli($container))->run(
+                    $input,
+                    new TimelineCliOutput()
+                );
+                break;
+            case 3:
+                if ($argv[1] == 'follows') {
+                    $application->add(new FollowCli($commandBus))->run(
+                        $input,
+                        $output
+                    );
+                    break;
+                }
+                $application->add(new AddPostCli($commandBus))->run(
+                    $input,
+                    $output
+                );
+                break;
+        }
     }
 }

@@ -52,7 +52,7 @@ class MemcachedService implements ApplicationServiceInterface
         $this->executeCommand('set', [$key, $value, $ttl]);
     }
 
-    private function executeCommand(string $command, array $args = []): void
+    private function executeCommand(string $command, array $args = [])
     {
         $memcached = $this->getMemcached();
         $value = call_user_func_array([$memcached, $command], $args);

@@ -4,55 +4,8 @@
 require __DIR__.'/vendor/autoload.php';
 
 use Prooph\ServiceBus\CommandBus;
-use SocialNetwork\Infrastructure\Cli\AddPostCli;
-use SocialNetwork\Infrastructure\Cli\FollowCli;
-use SocialNetwork\Infrastructure\Cli\Output\TimelineCliOutput;
-use SocialNetwork\Infrastructure\Cli\ReadCli;
-use SocialNetwork\Infrastructure\Cli\RunProjectionCli;
-use SocialNetwork\Infrastructure\Cli\WallCli;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 \Boot\SocialNetwork::create();
 $container = \Boot\SocialNetwork::getContainer();
 \Boot\SocialNetwork::router($container, $commandBus = new CommandBus());
-$application = new Application();
-$input = new ArgvInput($argv = $_SERVER['argv']);
-$output = new ConsoleOutput();
-array_shift($argv);
-
-switch (count($argv)) {
-    case 1:
-        if ($argv[0] == 'run:timeline:projections') {
-            $application->add(new RunProjectionCli($container))->run(
-                $input,
-                $output
-            );
-            break;
-        }
-        $application->add(new ReadCli($container))->run(
-            $input,
-            new TimelineCliOutput()
-        );
-        break;
-    case 2:
-        $application->add(new WallCli($container))->run(
-            $input,
-            new TimelineCliOutput()
-        );
-        break;
-    case 3:
-        if ($argv[1] == 'follows') {
-            $application->add(new FollowCli($commandBus))->run(
-                $input,
-                $output
-            );
-            break;
-        }
-        $application->add(new AddPostCli($commandBus))->run(
-            $input,
-            $output
-        );
-        break;
-}
+\Boot\SocialNetwork::console($container, $commandBus);

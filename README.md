@@ -19,6 +19,8 @@ Important Notes:
  
 How Does it work:
 ---
+first run projections: `docker-compose exec worker php console run:timeline:projection` . While projections are running, run one of commands below.
+ 
  list of commands(as I use docker, the prefix of all commands is `docker-compose exec worker php console`) sample commands:
   - Post: `alireza - 'Hello guys'`
   - Read: `alireza` 
