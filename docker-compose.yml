@@ -2,8 +2,6 @@ version: '3'
 services:
   worker:
     build: ./DockerFiles/Worker
-    ports:
-    - ${LOCAL_IP}:${PHP_SSH_PORT}:22
     depends_on:
     - mysql
     - memcached
