@@ -65,6 +65,11 @@ class TimelineAggregate extends AggregateRoot
         return $instance;
     }
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
     /**
      * Every AggregateRoot needs a hidden method that returns the identifier of the AggregateRoot as a string
      */

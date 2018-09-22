@@ -2,6 +2,7 @@
 declare(strict_types=1);
 namespace Boot;
 
+use Assert\Assertion;
 use Prooph\Common\Messaging\FQCNMessageFactory;
 use Prooph\EventStore\Pdo\MySqlEventStore;
 use Prooph\EventStore\Pdo\PersistenceStrategy\MySqlAggregateStreamStrategy;
@@ -34,6 +35,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Yaml\Yaml;
 
 class SocialNetwork
 {
@@ -54,18 +56,20 @@ class SocialNetwork
     public static function create($mode = self::PRODUCTION): self
     {
         $compiledClassName = 'MyCachedContainer' . $mode;
-        $cacheDir = getenv('VENDOR_DIR') . '/../cache/';
+        $cacheDir = __DIR__ . '/../cache/';
         $cachedContainerFile = "{$cacheDir}container" . $mode . '.php';
-
         if (!is_file($cachedContainerFile)) {
+            $configFile = __DIR__ . '/../config/setting.yml';
+            Assertion::file($configFile, ' the ' . $configFile . ' found.');
+            $config = Yaml::parse(file_get_contents($configFile));
             $container = new ContainerBuilder(new ParameterBag());
             $container->register(MySqlAggregateStreamStrategy::class);
             $container->register(FQCNMessageFactory::class);
             $container->register(TimeService::class)->setPublic(true);
             $container->register(\PDO::class, \PDO::class)
-                ->addArgument('mysql:host=mysql;port=3306;dbname=my_social_network;charset=utf8mb4')
-                ->addArgument('root')
-                ->addArgument('root');
+                ->addArgument($config['mysql'][strtolower($mode)]['uri'])
+                ->addArgument($config['mysql'][strtolower($mode)]['user'])
+                ->addArgument($config['mysql'][strtolower($mode)]['pass']);
             $container->register(MySqlEventStore::class)
                 ->addArgument(new Reference(FQCNMessageFactory::class))
                 ->addArgument(new Reference(\PDO::class))

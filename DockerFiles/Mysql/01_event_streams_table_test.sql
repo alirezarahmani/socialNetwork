@@ -1,5 +1,5 @@
-CREATE DATABASE IF NOT EXISTS `my_social_network_prod`;
-USE `my_social_network_prod`;
+CREATE DATABASE IF NOT EXISTS `my_social_network_test`;
+USE `my_social_network_test`;
 CREATE TABLE `event_streams` (
   `no` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `real_stream_name` VARCHAR(150) NOT NULL,

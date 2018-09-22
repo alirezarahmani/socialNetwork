@@ -1,4 +1,4 @@
-USE `my_social_network_prod`;
+USE `my_social_network_test`;
 CREATE TABLE `projections` (
   `no` BIGINT(20) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(150) NOT NULL,
