@@ -14,7 +14,7 @@ class ConsoleOutput extends CO
      *
      * @throws \Assert\AssertionFailedException
      */
-    public function asTimeline(array $result, ApplicationServiceInterface $service):void
+    public function asList(array $result, ApplicationServiceInterface $service): void
     {
         if (empty($result)) {
             $this->writeln('<info>nothing to display</info>');

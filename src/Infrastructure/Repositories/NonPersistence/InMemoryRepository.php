@@ -3,7 +3,6 @@ declare(strict_types=1);
 namespace SocialNetwork\Infrastructure\Repositories\NonPersistence;
 
 use Assert\Assertion;
-use SocialNetwork\Application\Services\TimeService;
 
 abstract class InMemoryRepository
 {

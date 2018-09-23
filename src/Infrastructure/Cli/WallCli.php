@@ -4,6 +4,7 @@ namespace SocialNetwork\Infrastructure\Cli;
 
 use SocialNetwork\Application\Services\TimeService;
 use SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Container;
@@ -14,7 +15,7 @@ class WallCli extends SocialNetwork
     {
         $this
             ->setName('wall')
-            ->addArgument('username')
+            ->addArgument('username', InputArgument::REQUIRED)
             ->setDescription('read somebody\'s wall');
     }
 
@@ -25,6 +26,6 @@ class WallCli extends SocialNetwork
             TimelineRepository::TIMELINE_INDEX,
             $username
         );
-        $output->asTimeline($result, $this->container->get(TimeService::class));
+        $output->asList($result, $this->container->get(TimeService::class));
     }
 }
