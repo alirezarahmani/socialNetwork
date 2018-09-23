@@ -2,12 +2,11 @@
 declare(strict_types=1);
 namespace SocialNetwork\Infrastructure\Cli;
 
-use Boot\SocialNetwork;
 use Prooph\ServiceBus\CommandBus;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\Container;
 
-abstract class SocialNetworkCli extends Command
+abstract class SocialNetwork extends Command
 {
     protected $commandBus;
     protected $container;

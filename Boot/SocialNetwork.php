@@ -2,55 +2,104 @@
 declare(strict_types=1);
 namespace Boot;
 
+use ArrayObject;
 use Assert\Assertion;
+use Exception;
 use Prooph\Common\Messaging\FQCNMessageFactory;
 use Prooph\EventStore\Pdo\MySqlEventStore;
 use Prooph\EventStore\Pdo\PersistenceStrategy\MySqlAggregateStreamStrategy;
 use Prooph\EventStore\Pdo\Projection\MySqlProjectionManager;
 use Prooph\ServiceBus\CommandBus;
 use Prooph\ServiceBus\Plugin\Router\CommandRouter;
-use SocialNetwork\Application\Commands\FollowCommand;
-use SocialNetwork\Application\Commands\PostCommand;
 use SocialNetwork\Application\Services\MemcachedService;
 use SocialNetwork\Application\Services\TimeService;
 use SocialNetwork\Application\Storage\MemcachedCacheStorage;
-use SocialNetwork\Domain\Handlers\AddPostHandler;
-use SocialNetwork\Domain\Handlers\FollowHandler;
-use SocialNetwork\Infrastructure\Cli\AddPostCli;
-use SocialNetwork\Infrastructure\Cli\FollowCli;
-use SocialNetwork\Infrastructure\Cli\Output\TimelineCliOutput;
-use SocialNetwork\Infrastructure\Cli\ReadCli;
-use SocialNetwork\Infrastructure\Cli\RunProjectionCli;
-use SocialNetwork\Infrastructure\Cli\WallCli;
+use SocialNetwork\Infrastructure\Cli\Output\ConsoleInput;
+use SocialNetwork\Infrastructure\Cli\Output\ConsoleOutput;
 use SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository;
 use SocialNetwork\Projections\TimelineProjection;
 use SocialNetwork\Infrastructure\Repositories\Persistence\TimelineRepository as PTR;
+use SplFileInfo;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
 class SocialNetwork
 {
+    const CONSOLE_APPLICATION = 'console_application';
     const PRODUCTION = 'Prod';
     const TEST = 'Test';
     const MODE = [
         self::PRODUCTION,
         self::TEST
     ];
-
     private static $containerBuilder;
 
     private function __construct(Container $containerBuilder)
     {
         self::$containerBuilder = $containerBuilder;
+    }
+
+    public function explode()
+    {
+        if (PHP_SAPI == "cli") {
+            $this->runCli(new ConsoleInput(), new ConsoleOutput());
+        } else {
+            $this->runHttp();
+        }
+    }
+
+    private function runHttp()
+    {
+        /**
+         * if we have Http
+         */
+    }
+
+    private function runCli(InputInterface $input, OutputInterface $output): void
+    {
+        $application = new Application();
+        $application->setAutoExit(false);
+        /** @var Container $container */
+        $container = self::$containerBuilder;
+        foreach ($container->get(self::CONSOLE_APPLICATION)['classes'] as $class) {
+            $application->add(new $class());
+        }
+        $application->setCatchExceptions(false);
+        try {
+            $application->run($input, $output);
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+
+    private static function loadConsoleApplications(string $appPath):array
+    {
+        $classes = [];
+            $dir = $appPath . '/src/Infrastructure/Cli';
+        if (!is_dir($dir)) {
+            throw new \InvalidArgumentException('no valid directory');
+        }
+        $finder = new Finder();
+        foreach ($finder->files()->name('*Cli.php')->in($dir) as $file) {
+            /**
+             * @var SplFileInfo $file
+             */
+            $className = 'SocialNetwork\\Infrastructure\\Cli\\'.substr($file->getRelativePathname(), 0, -4);
+            $reflection = new \ReflectionClass($className);
+            if ($reflection->isInstantiable()) {
+                $classes[] = $className;
+            }
+        }
+        return ['classes' => $classes];
     }
 
     public static function create($mode = self::PRODUCTION): self
@@ -106,10 +155,10 @@ class SocialNetwork
          * @var Container $container
          */
         $container =  new $compiledClassName();
-        $request = Request::createFromGlobals();
-        $container->set(Request::class, $request);
+        $container->set(self::CONSOLE_APPLICATION, new ArrayObject(self::loadConsoleApplications(__DIR__ . '/../')));
         self::addEventSubscribers();
-        return new static($container);
+        self::addCommandRoutes($container);
+        return new self($container);
     }
 
     public static function getContainer(): Container
@@ -117,62 +166,21 @@ class SocialNetwork
         return self::$containerBuilder;
     }
 
-    public static function router(Container $container, CommandBus $commandBus)
+    private static function addCommandRoutes(Container $container)
     {
+        $configFile = __DIR__ . '/../config/routes.yml';
+        Assertion::file($configFile, ' the ' . $configFile . ' found.');
+        $routes = Yaml::parse(file_get_contents($configFile));
+
         $router = new CommandRouter();
-        $router->route(PostCommand::class)->to(new AddPostHandler($container->get(PTR::class)));
-        $router->route(FollowCommand::class)->to(new FollowHandler($container->get(PTR::class)));
-        $router->attachToMessageBus($commandBus);
+        foreach ($routes as $key => $route) {
+            $router->route($route['name'])->to(new $route['handler']($container->get(PTR::class)));
+        }
+        $router->attachToMessageBus($container->get(CommandBus::class));
     }
 
     private static function addEventSubscribers(): void
     {
         //@todo : do something here.
-    }
-
-    public static function console(Container $container, CommandBus $commandBus)
-    {
-        $application = new Application();
-        $input = new ArgvInput($argv = $_SERVER['argv']);
-        $output = new ConsoleOutput();
-        array_shift($argv);
-
-        /**
-         * no validation here
-         */
-        switch (count($argv)) {
-            case 1:
-                if ($argv[0] == 'run:timeline:projection') {
-                    $application->add(new RunProjectionCli($container))->run(
-                        $input,
-                        $output
-                    );
-                    break;
-                }
-                $application->add(new ReadCli($container))->run(
-                    $input,
-                    new TimelineCliOutput()
-                );
-                break;
-            case 2:
-                $application->add(new WallCli($container))->run(
-                    $input,
-                    new TimelineCliOutput()
-                );
-                break;
-            case 3:
-                if ($argv[1] == 'follows') {
-                    $application->add(new FollowCli($commandBus))->run(
-                        $input,
-                        $output
-                    );
-                    break;
-                }
-                $application->add(new AddPostCli($commandBus))->run(
-                    $input,
-                    $output
-                );
-                break;
-        }
     }
 }

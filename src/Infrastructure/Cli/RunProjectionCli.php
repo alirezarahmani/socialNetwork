@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Container;
 
-class RunProjectionCli extends SocialNetworkCli
+class RunProjectionCli extends SocialNetwork
 {
     public function __construct(Container $container)
     {

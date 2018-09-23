@@ -4,7 +4,6 @@ if [ ! -f .env ]; then
     touch .env
     echo LOCAL_IP=0.0.0.0 >> .env
     echo MYSQL_PORT=3307 >> .env
-    echo PHP_SSH_PORT=23 >> .env
     echo LOCAL_DIR=$(pwd) >> .env
 fi
 

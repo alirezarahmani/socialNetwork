@@ -7,12 +7,12 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class AddPostCli extends SocialNetworkCli
+class AddPostCli extends SocialNetwork
 {
     protected function configure():void
     {
         $this
-            ->setName('posting')
+            ->setName('post')
             ->setDescription('add new post to wall')
             ->addArgument('sign', InputArgument::REQUIRED)
             ->addArgument('message', InputArgument::REQUIRED, 'the name of user');

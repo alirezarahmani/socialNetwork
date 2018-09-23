@@ -7,12 +7,12 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class FollowCli extends SocialNetworkCli
+class FollowCli extends SocialNetwork
 {
     protected function configure()
     {
         $this
-            ->setName('following')
+            ->setName('follow')
             ->setDescription('read somebody wall')
             ->addArgument('sign', InputArgument::REQUIRED)
             ->addArgument('follows', InputArgument::REQUIRED, 'the name of other user');

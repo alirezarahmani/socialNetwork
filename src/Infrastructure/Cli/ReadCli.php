@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Container;
 
-class ReadCli extends SocialNetworkCli
+class ReadCli extends SocialNetwork
 {
     public function __construct(Container $container)
     {

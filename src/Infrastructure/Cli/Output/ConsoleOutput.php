@@ -4,9 +4,9 @@ namespace SocialNetwork\Infrastructure\Cli\Output;
 
 use Assert\Assertion;
 use SocialNetwork\Application\Services\ApplicationServiceInterface;
-use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\ConsoleOutput as CO;
 
-class TimelineCliOutput extends ConsoleOutput
+class ConsoleOutput extends CO
 {
     /**
      * @param array                       $result
@@ -14,7 +14,7 @@ class TimelineCliOutput extends ConsoleOutput
      *
      * @throws \Assert\AssertionFailedException
      */
-    public function success(array $result, ApplicationServiceInterface $service):void
+    public function timelineFormatOutput(array $result, ApplicationServiceInterface $service):void
     {
         Assertion::keyIsset($result, 'username', 'sorry, result is not valid');
         $username = $result[0]['username'];
@@ -30,7 +30,7 @@ class TimelineCliOutput extends ConsoleOutput
         }
     }
 
-    public function failed(string $username):void
+    public function timelineEmptyOutput(string $username):void
     {
         $this->writeln('<error>' . $username . ' has not posted yet!</error>');
     }

@@ -34,6 +34,7 @@
     "prooph/event-sourcing": "^5.0",
     "ramsey/uuid": "^3.8",
     "prooph/pdo-event-store": "^1.9",
-    "prooph/standard-projections": "^1.1"
+    "prooph/standard-projections": "^1.1",
+    "symfony/finder": "^4.1"
   }
 }

@@ -19,6 +19,6 @@ class TimelineCliOutputTest extends SocialNetwork
     {
         $this->expectException(\Assert\AssertionFailedException::class);
         $this->expectExceptionMessage('sorry, result is not valid');
-        $this->timelineCli->success([], $this->timeService);
+        $this->timelineCli->timelineFormatOutput([], $this->timeService);
     }
 }

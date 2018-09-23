@@ -1,0 +1,7 @@
+routes:
+  post:
+    name: SocialNetwork\Application\Commands\PostCommand
+    handler: SocialNetwork\Domain\Handlers\AddPostHandler
+  follow:
+    name: SocialNetwork\Application\Commands\FollowCommand
+    handler: SocialNetwork\Domain\Handlers\FollowHandler
