@@ -14,8 +14,12 @@ class ConsoleOutput extends CO
      *
      * @throws \Assert\AssertionFailedException
      */
-    public function timelineFormatOutput(array $result, ApplicationServiceInterface $service):void
+    public function asTimeline(array $result, ApplicationServiceInterface $service):void
     {
+        if (empty($result)) {
+            $this->writeln('<info>nothing to display</info>');
+            return;
+        }
         Assertion::keyIsset($result, 'username', 'sorry, result is not valid');
         $username = $result[0]['username'];
         $this->writeln('<info> > ' . $username . ':');
@@ -28,10 +32,5 @@ class ConsoleOutput extends CO
             $value['createAt'] = $service->elapsed(strtotime($value['createAt']));
             $this->writeln('<info>| ' . is_array($value) ? implode(' ', $value) : $value . '</info>');
         }
-    }
-
-    public function timelineEmptyOutput(string $username):void
-    {
-        $this->writeln('<error>' . $username . ' has not posted yet!</error>');
     }
 }

@@ -48,7 +48,7 @@ class SocialNetwork
         self::$containerBuilder = $containerBuilder;
     }
 
-    public function explode()
+    public function explode(): void
     {
         if (PHP_SAPI == "cli") {
             $this->runCli(new ConsoleInput(), new ConsoleOutput());
@@ -70,8 +70,9 @@ class SocialNetwork
         $application->setAutoExit(false);
         /** @var Container $container */
         $container = self::$containerBuilder;
+        $commandBus = new CommandBus();
         foreach ($container->get(self::CONSOLE_APPLICATION)['classes'] as $class) {
-            $application->add(new $class());
+            $application->add(new $class($commandBus, $container));
         }
         $application->setCatchExceptions(false);
         try {
@@ -81,14 +82,15 @@ class SocialNetwork
         }
     }
 
-    private static function loadConsoleApplications(string $appPath):array
+    private static function loadConsoleApplications(string $appPath): array
     {
         $classes = [];
-            $dir = $appPath . '/src/Infrastructure/Cli';
+        $dir = $appPath . '/src/Infrastructure/Cli';
         if (!is_dir($dir)) {
             throw new \InvalidArgumentException('no valid directory');
         }
         $finder = new Finder();
+
         foreach ($finder->files()->name('*Cli.php')->in($dir) as $file) {
             /**
              * @var SplFileInfo $file
@@ -166,17 +168,17 @@ class SocialNetwork
         return self::$containerBuilder;
     }
 
-    private static function addCommandRoutes(Container $container)
+    private static function addCommandRoutes(Container $container): void
     {
         $configFile = __DIR__ . '/../config/routes.yml';
         Assertion::file($configFile, ' the ' . $configFile . ' found.');
         $routes = Yaml::parse(file_get_contents($configFile));
 
         $router = new CommandRouter();
-        foreach ($routes as $key => $route) {
+        foreach ($routes['routes'] as $key => $route) {
             $router->route($route['name'])->to(new $route['handler']($container->get(PTR::class)));
         }
-        $router->attachToMessageBus($container->get(CommandBus::class));
+        $router->attachToMessageBus(new CommandBus());
     }
 
     private static function addEventSubscribers(): void

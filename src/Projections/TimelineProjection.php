@@ -31,13 +31,14 @@ class TimelineProjection
         /** @var TimelineRepository $repository */
         $repository = $this->repository;
         echo 'projection is running ...';
+        //@todo:: writes a factory instead
         $this->projection->fromCategory(TimelineAggregate::class)
             ->whenAny(
                 function ($state, AggregateChanged $event) use ($repository): void {
                     if (is_a($event, AddPost::class)) {
                         $repository->addNewPost($event);
                     } elseif (is_a($event, Follows::class)) {
-                        $repository->addByIndex(TimelineRepository::FOLLOWS_INDEX, $event->payload());
+                        $repository->addFollow($event);
                     }
                     echo '.';
                 }

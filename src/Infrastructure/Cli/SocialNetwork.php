@@ -11,7 +11,7 @@ abstract class SocialNetwork extends Command
     protected $commandBus;
     protected $container;
 
-    public function __construct(?CommandBus $commandBus, Container $container = null)
+    public function __construct(CommandBus $commandBus, Container $container)
     {
         parent::__construct(null);
         $this->addOption('force');

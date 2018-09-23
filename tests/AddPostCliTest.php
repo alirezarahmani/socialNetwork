@@ -23,8 +23,8 @@ class AddPostCliTest extends SocialNetwork
     public function should_throw_exception_with_less_argument()
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Not enough arguments (missing: "sign").');
-        $command = new CommandTester(new AddPostCli($this->commandBus));
+        $this->expectExceptionMessage('Not enough arguments (missing: "username, sign").');
+        $command = new CommandTester(new AddPostCli($this->commandBus, $this->container));
         $command->execute(['message' => 'hi there']);
     }
 
@@ -33,7 +33,7 @@ class AddPostCliTest extends SocialNetwork
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('The "more-argument" argument does not exist.');
-        $command = new CommandTester(new AddPostCli($this->commandBus));
+        $command = new CommandTester(new AddPostCli($this->commandBus, $this->container));
         $command->execute(['message' => 'hi there', 'sign' => 'hi there ' , 'more-argument' => 'this is more']);
     }
 
@@ -41,9 +41,9 @@ class AddPostCliTest extends SocialNetwork
     public function should_display_well_done_in_console()
     {
         $this->commandBus->shouldReceive('dispatch')->times(1)->andReturnNull();
-        $command = new CommandTester(new AddPostCli($this->commandBus));
-        $command->execute(['message' => 'alireza', 'sign' => 'hi there']);
-        $this->assertEquals($command->getDisplay(),' Well done! The post is on the wall of alireza 
+        $command = new CommandTester(new AddPostCli($this->commandBus, $this->container));
+        $command->execute(['username' => 'alireza', 'sign' => 'hi there', 'message' => 'hi there']);
+        $this->assertEquals($command->getDisplay(),' posted to wall of alireza successfully 
 ' );
     }
 }

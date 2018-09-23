@@ -14,16 +14,17 @@ class AddPostCli extends SocialNetwork
         $this
             ->setName('post')
             ->setDescription('add new post to wall')
+            ->addArgument('username', InputArgument::REQUIRED)
             ->addArgument('sign', InputArgument::REQUIRED)
-            ->addArgument('message', InputArgument::REQUIRED, 'the name of user');
+            ->addArgument('message', InputArgument::REQUIRED);
     }
 
     public function execute(InputInterface $input, OutputInterface $output):void
     {
         $this->commandBus->dispatch(new PostCommand(
-            $input->getFirstArgument(),
+            $input->getArgument('username'),
             $input->getArgument('message')
         ));
-        $output->writeln('<info> Well done! The post is on the wall of ' . $input->getFirstArgument() . ' </info>');
+        $output->writeln('<info> posted to wall of ' . $input->getArgument('username') . ' successfully </info>');
     }
 }

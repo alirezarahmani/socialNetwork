@@ -14,6 +14,7 @@ class FollowCli extends SocialNetwork
         $this
             ->setName('follow')
             ->setDescription('read somebody wall')
+            ->addArgument('username')
             ->addArgument('sign', InputArgument::REQUIRED)
             ->addArgument('follows', InputArgument::REQUIRED, 'the name of other user');
     }
@@ -21,12 +22,12 @@ class FollowCli extends SocialNetwork
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $this->commandBus->dispatch(new FollowCommand(
-            $input->getFirstArgument(),
+            $input->getArgument('username'),
             $input->getArgument('follows')
         ));
 
         $output->writeln(
-            '<info> Well done! '. $input->getFirstArgument() .' now, is following ' . $input->getArgument('follows') . ' </info>'
+            '<info>'. $input->getArgument('username') .' now, is following ' . $input->getArgument('follows') . ' </info>'
         );
     }
 }

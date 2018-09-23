@@ -10,11 +10,6 @@ use Symfony\Component\DependencyInjection\Container;
 
 class WallCli extends SocialNetwork
 {
-    public function __construct(Container $container)
-    {
-        parent::__construct(null, $container);
-    }
-
     protected function configure()
     {
         $this
@@ -25,12 +20,11 @@ class WallCli extends SocialNetwork
 
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        $username = $input->getFirstArgument();
-        $result = $this->container->get(TimelineRepository::class)->findByIndex(TimelineRepository::TIMELINE_INDEX, $username);
-        if (!empty($result)) {
-            $output->success($result, $this->container->get(TimeService::class));
-            return;
-        }
-        $output->failed($username);
+        $username = $input->getArgument('username');
+        $result = $this->container->get(TimelineRepository::class)->findByIndex(
+            TimelineRepository::TIMELINE_INDEX,
+            $username
+        );
+        $output->asTimeline($result, $this->container->get(TimeService::class));
     }
 }

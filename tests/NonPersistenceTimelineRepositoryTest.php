@@ -1,7 +1,6 @@
 <?php
 namespace Test;
 
-
 use Assert\AssertionFailedException;
 use SocialNetwork\Application\Storage\MemcachedCacheStorage;
 use SocialNetwork\Infrastructure\Repositories\NonPersistence\TimelineRepository;
@@ -32,18 +31,18 @@ class NonPersistenceTimelineRepositoryTest extends SocialNetwork
     {
         $index = 'wrong_index';
         $this->expectException(AssertionFailedException::class);
-        $this->expectExceptionMessage('wrong cache indices index, the index: ' . $index . ' not exist!');
+        $this->expectExceptionMessage('wrong cache index, the index: ' . $index . ' not exist!');
         $this->repository->addByIndex($index, []);
     }
     /** @test */
     public function should_throw_exception_with_wrong_filed_add()
     {
-        $this->expectExceptionMessage('wrong values to insert, unable to find field :username');
+        $this->expectExceptionMessage('wrong values to insert, unable to find field:username');
         $this->expectException(AssertionFailedException::class);
         $this->repository->addByIndex(TimelineRepository::TIMELINE_INDEX, ['wrong_filed' => 'hi']);
     }
     /** @test */
-    public function should_set_right_value()
+    public function should_set_corrent_value()
     {
         $payload = ['username' => 'alireza', 'message' => 'hi there'];
         $this->repository->addByIndex(TimelineRepository::TIMELINE_INDEX, $payload);
@@ -55,7 +54,7 @@ class NonPersistenceTimelineRepositoryTest extends SocialNetwork
     {
         $index = 'wrong_index';
         $this->expectException(AssertionFailedException::class);
-        $this->expectExceptionMessage('wrong cache indices index, the index: ' . $index . ' not exist!');
+        $this->expectExceptionMessage('wrong cache index, the index: ' . $index . ' not exist!');
         $this->repository->findByIndex($index, []);
     }
 }

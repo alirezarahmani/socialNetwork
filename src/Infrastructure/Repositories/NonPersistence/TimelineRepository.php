@@ -7,6 +7,7 @@ use SocialNetwork\Application\Services\TimeService;
 use SocialNetwork\Application\Storage\CacheIndex;
 use SocialNetwork\Application\Storage\CacheStorageInterface;
 use SocialNetwork\Domain\Events\AddPost;
+use SocialNetwork\Domain\Events\Follows;
 use SocialNetwork\Domain\Repository\NonPersistence\RepositoryInterface;
 
 class TimelineRepository extends InMemoryRepository implements RepositoryInterface
@@ -46,6 +47,11 @@ class TimelineRepository extends InMemoryRepository implements RepositoryInterfa
         foreach ($followers as $follower) {
             $this->addToFollowerWallByIndex(self::TIMELINE_INDEX, $follower, $payload);
         }
+    }
+
+    public function addFollow(Follows $event): void
+    {
+        $this->addByIndex(TimelineRepository::FOLLOWS_INDEX, $event->payload());
     }
 
     public function addToFollowerWallByIndex(string $index, string $follower, array $values): void

@@ -10,26 +10,21 @@ use Symfony\Component\DependencyInjection\Container;
 
 class ReadCli extends SocialNetwork
 {
-    public function __construct(Container $container)
-    {
-        parent::__construct(null, $container);
-    }
-
     protected function configure()
     {
         $this
             ->setName('read')
+            ->addArgument('username')
             ->setDescription('read somebody\'s wall');
     }
 
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        $username = $input->getFirstArgument();
-        $result = $this->container->get(TimelineRepository::class)->findByIndex(TimelineRepository::READ_INDEX, $username);
-        if (!empty($result)) {
-            $output->success($result, $this->container->get(TimeService::class));
-            return;
-        }
-        $output->failed($username);
+        $username = $input->getArgument('username');
+        $result = $this->container->get(TimelineRepository::class)->findByIndex(
+            TimelineRepository::READ_INDEX,
+            $username
+        );
+        $output->asTimeline($result, $this->container->get(TimeService::class));
     }
 }
