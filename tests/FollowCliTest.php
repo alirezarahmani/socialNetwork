@@ -43,8 +43,8 @@ class FollowCliTest extends SocialNetwork
     {
         $this->commandBus->shouldReceive('dispatch')->times(1)->andReturnNull();
         $command = new CommandTester(new FollowCli($this->commandBus, $this->container));
-        $command->execute(['username' => 'alireza', 'follows' => 'hi there', 'other_username' => 'anton']);
-        $this->assertEquals($command->getDisplay(),'alireza now, is following anton 
+        $command->execute(['username' => 'testguy', 'follows' => 'hi there', 'other_username' => 'anton']);
+        $this->assertEquals($command->getDisplay(),'testguy now, is following anton 
 ' );
     }
 }

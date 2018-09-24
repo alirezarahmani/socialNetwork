@@ -42,8 +42,8 @@ class AddPostCliTest extends SocialNetwork
     {
         $this->commandBus->shouldReceive('dispatch')->times(1)->andReturnNull();
         $command = new CommandTester(new AddPostCli($this->commandBus, $this->container));
-        $command->execute(['username' => 'alireza', 'sign' => 'hi there', 'message' => 'hi there']);
-        $this->assertEquals($command->getDisplay(),' posted to wall of alireza successfully 
+        $command->execute(['username' => 'testguy', 'sign' => 'hi there', 'message' => 'hi there']);
+        $this->assertEquals($command->getDisplay(),' posted to wall of testguy successfully 
 ' );
     }
 }

@@ -37,7 +37,7 @@ class SocialNetwork
     const CONSOLE_APPLICATION = 'console_application';
     const PRODUCTION = 'Prod';
     const TEST = 'Test';
-    const MODE = [
+    const MODES = [
         self::PRODUCTION,
         self::TEST
     ];
@@ -109,6 +109,8 @@ class SocialNetwork
         $compiledClassName = 'MyCachedContainer' . $mode;
         $cacheDir = __DIR__ . '/../cache/';
         $cachedContainerFile = "{$cacheDir}container" . $mode . '.php';
+
+        //create container if not exist
         if (!is_file($cachedContainerFile)) {
             $configFile = __DIR__ . '/../config/setting.yml';
             Assertion::file($configFile, ' the ' . $configFile . ' found.');
@@ -159,6 +161,7 @@ class SocialNetwork
          * @var Container $container
          */
         $container =  new $compiledClassName();
+        // add commands
         $container->set(self::CONSOLE_APPLICATION, new ArrayObject(self::loadConsoleApplications(__DIR__ . '/../')));
         self::addEventSubscribers();
         self::addCommandRoutes($container);
