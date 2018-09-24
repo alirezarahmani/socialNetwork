@@ -6,7 +6,6 @@ use InvalidArgumentException;
 
 class MemcachedService implements ApplicationServiceInterface
 {
-
     /**
      * @var \Memcached
      */

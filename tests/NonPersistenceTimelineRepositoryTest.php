@@ -44,9 +44,9 @@ class NonPersistenceTimelineRepositoryTest extends SocialNetwork
     /** @test */
     public function should_set_corrent_value()
     {
-        $payload = ['username' => 'alireza', 'message' => 'hi there'];
+        $payload = ['username' => 'testguys', 'message' => 'hi there'];
         $this->repository->addByIndex(TimelineRepository::TIMELINE_INDEX, $payload);
-        $result = $this->repository->findByIndex(TimelineRepository::TIMELINE_INDEX, 'alireza');
+        $result = $this->repository->findByIndex(TimelineRepository::TIMELINE_INDEX, 'testguys');
         $this->assertEquals($result[0], $payload);
     }
     /** @test */

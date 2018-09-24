@@ -14,13 +14,13 @@ class ConsoleOutput extends CO
      *
      * @throws \Assert\AssertionFailedException
      */
-    public function asList(array $result, ApplicationServiceInterface $service): void
+    public function asList(?array $result, ApplicationServiceInterface $service): void
     {
         if (empty($result)) {
             $this->writeln('<info>nothing to display</info>');
             return;
         }
-        Assertion::keyIsset($result, 'username', 'sorry, result is not valid');
+        Assertion::keyIsset($result[0], 'username', 'sorry, result is not valid');
         $username = $result[0]['username'];
         $this->writeln('<info> > ' . $username . ':');
         foreach ($result as $key => $value) {

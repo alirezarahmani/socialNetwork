@@ -16,13 +16,13 @@ class TimeService implements ApplicationServiceInterface
     const YEAR = 31104000;
 
     const NAMES = [
-        self::SECOND => 'second',
-        self::MINUTE => 'minute',
-        self::HOUR => 'hour',
-        self::DAY => 'day',
-        self::WEEK => 'week',
-        self::MONTH => 'month',
         self::YEAR => 'year',
+        self::MONTH => 'month',
+        self::WEEK => 'week',
+        self::DAY => 'day',
+        self::HOUR => 'hour',
+        self::MINUTE => 'minute',
+        self::SECOND => 'second',
     ];
 
     public function elapsed($time):string

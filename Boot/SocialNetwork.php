@@ -70,7 +70,7 @@ class SocialNetwork
         $application->setAutoExit(false);
         /** @var Container $container */
         $container = self::$containerBuilder;
-        $commandBus = new CommandBus();
+        $commandBus = $container->get(CommandBus::class);
         foreach ($container->get(self::CONSOLE_APPLICATION)['classes'] as $class) {
             $application->add(new $class($commandBus, $container));
         }
@@ -133,6 +133,8 @@ class SocialNetwork
             $container->register(TimelineRepository::class)
                 ->addArgument(new Reference(MemcachedCacheStorage::class))
                 ->setPublic(true);
+            $container->register(CommandBus::class)
+                ->setPublic(true);
             $container->register(MySqlProjectionManager::class)
                 ->addArgument(new Reference(MySqlEventStore::class))
                 ->addArgument(new Reference(\PDO::class))
@@ -176,9 +178,10 @@ class SocialNetwork
 
         $router = new CommandRouter();
         foreach ($routes['routes'] as $key => $route) {
-            $router->route($route['name'])->to(new $route['handler']($container->get(PTR::class)));
+            $handler = new $route['handler']($container->get(PTR::class));
+            $router->route($route['name'])->to($handler);
         }
-        $router->attachToMessageBus(new CommandBus());
+        $router->attachToMessageBus($container->get(CommandBus::class));
     }
 
     private static function addEventSubscribers(): void
