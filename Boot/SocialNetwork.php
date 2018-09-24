@@ -107,7 +107,7 @@ class SocialNetwork
     public static function create($mode = self::PRODUCTION): self
     {
         $compiledClassName = 'MyCachedContainer' . $mode;
-        $cacheDir = __DIR__ . '/../cache/';
+        $cacheDir = __DIR__ . '/../Cache/';
         $cachedContainerFile = "{$cacheDir}container" . $mode . '.php';
 
         //create container if not exist

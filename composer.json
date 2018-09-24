@@ -16,7 +16,7 @@
   "autoload": {
     "psr-4": {
       "SocialNetwork\\": "src/",
-      "Boot\\": "boot/",
+      "Boot\\": "Boot/",
       "Test\\": "tests/"
     }
   },
