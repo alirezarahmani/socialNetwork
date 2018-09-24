@@ -16,7 +16,6 @@ class ConsoleOutput extends CO
      */
     public function asList(?array $result, ApplicationServiceInterface $service): void
     {
-        var_dump($result);
         if (empty($result)) {
             $this->writeln('<info>nothing to display</info>');
             return;

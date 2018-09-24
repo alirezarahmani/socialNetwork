@@ -74,4 +74,10 @@ class MemcachedService implements ApplicationServiceInterface
         }
         return $this->memcached;
     }
+
+
+    public function delete(string $key)
+    {
+        return $this->executeCommand('delete', [$key]);
+    }
 }
