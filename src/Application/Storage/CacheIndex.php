@@ -4,7 +4,7 @@ namespace SocialNetwork\Application\Storage;
 
 class CacheIndex
 {
-    const KEY_PREFIX = 'Storage:';
+    const KEY_PREFIX = 'Storage';
 
     private $field;
 
