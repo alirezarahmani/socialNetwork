@@ -26,7 +26,7 @@ first run projections: `docker-compose exec worker php console run:timeline:proj
   - To Post: `post alireza - 'Hello guys'` 
   - To Read: `read alireza` 
   - To Follow: `follow anton follows alireza` 
-  - To Wall: `wall alireza wall` 
+  - To Wall: `wall alireza` 
 
 For example Alireza post something like:   
  ` docker-compose exec worker php console post alireza - 'Hello, morning morning' `
