@@ -1,5 +1,5 @@
 
-Social Network Home Excise:
+Social Network Home Exercise:
 -
 
 Hello
@@ -14,7 +14,7 @@ The only thing you need to run project is just run the following command: `./bui
 
 Important Notes:
 ---
- - As in the excise description mentioned, in this project I assumed we are in sunny day(all inputs are right). So, You do not find any validation(I write some validation only for business rules)
+ - As in the exercise description mentioned, in this project I assumed we are in sunny day(all inputs are right). So, You do not find any validation(I write some validation only for business rules)
  - I do not use any Framework, Library or Modules; But I use some PHP packages(**As I got your permission in Linkedin**). These packages have 99% percentage test coverage and large community, thousands people trust them. Why instead of composer packages I do not write them? As I prefer DDD approach for this project writing and testing that amount of code takes too much time.
 
 
